@@ -864,7 +864,7 @@ public class Robot extends IterativeRobot {
 	 * Used to calculate the robot distance from the wall
 	 */
 	double CalculateWallDistanceShooter(boolean averaged)
-	{	averaged = true;
+	{	
 		double rawVoltage;
 		double wallDistance;
 
@@ -885,7 +885,7 @@ public class Robot extends IterativeRobot {
 	 */
 	double CalculateWallDistanceR(boolean averaged)
 	{
-		averaged = true;
+		
 		double rawVoltage;
 		double wallDistance;
 
@@ -909,7 +909,7 @@ public class Robot extends IterativeRobot {
 	 * Used to calculate the robot distance from the wall
 	*/
 	double CalculateWallDistanceL(boolean averaged)
-	{	averaged = true;
+	{
 		double rawVoltage;
 		double wallDistance;
 
