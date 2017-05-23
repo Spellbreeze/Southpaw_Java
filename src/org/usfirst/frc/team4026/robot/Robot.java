@@ -5,7 +5,10 @@ import com.ctre.CANTalon;
 import edu.wpi.first.wpilibj.AnalogGyro;
 import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.CameraServer;
+import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.DoubleSolenoid;
+import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.IterativeRobot;
@@ -38,10 +41,13 @@ public class Robot extends IterativeRobot {
     Servo shooterServo;
    	Servo agitatorServo;
     Talon agitatorMotor;
+    DoubleSolenoid gearCatcherValve;
+    Compressor compressorPointer;
     
     Joystick driveLeftStick;
     Joystick driveRightStick;
     Joystick manipulatorStick;
+    Joystick overrideControl;
     
     AnalogGyro driveGyro;
    	AnalogInput wallDistanceSensorS;
@@ -68,6 +74,7 @@ public class Robot extends IterativeRobot {
 	boolean isGyroResetTelop;
 	boolean agitatorUp;
 	boolean genericTimerStarted;
+	boolean easyMode = false;
 	int autoState;
 	int gearCatcherState;
 	int shootFuelState;
@@ -129,6 +136,10 @@ public class Robot extends IterativeRobot {
 		
 		agitatorMotor = new Talon(2);
 		
+		gearCatcherValve = new DoubleSolenoid(5,2);
+		compressorPointer = new Compressor();
+		compressorPointer.setClosedLoopControl(true);
+		
 		wallDistanceSensorS = new AnalogInput(3);
 		wallDistanceSensorR = new AnalogInput(2);
 		wallDistanceSensorL = new AnalogInput(1);
@@ -145,6 +156,7 @@ public class Robot extends IterativeRobot {
 	    driveLeftStick = new Joystick(0);
         driveRightStick = new Joystick(1);
         manipulatorStick = new Joystick(2);
+        overrideControl = new Joystick(3);
         
         autoDriveTimer = new Timer();
     	agitatorTimer = new Timer();
@@ -183,6 +195,7 @@ public class Robot extends IterativeRobot {
 		driveReverse = true;
 		driveGyro.reset();
 
+		gearCatcherValve.set(Value.kReverse);
 		//autoDriveTimer = new Timer();
 		//agitatorTimer = new Timer();
 
@@ -313,7 +326,7 @@ public class Robot extends IterativeRobot {
 		double left = driveLeftStick.getY();
 
 		//Cut speed in half
-		if(driveLeftStick.getTrigger())
+		if(manipulatorStick.getRawButton(7) || easyMode)
 		{
 			right /= 2.0;
 			left /= 2.0;
@@ -568,6 +581,18 @@ public class Robot extends IterativeRobot {
 			}
 
 			gearCatcherState = 0;
+		}
+	}
+	
+	void gearPiston()
+	{
+		if(manipulatorStick.getRawButton(4))
+		{
+			gearCatcherValve.set(Value.kForward);
+		}
+		else
+		{
+			gearCatcherValve.set(Value.kReverse);
 		}
 	}
 
@@ -909,7 +934,7 @@ public class Robot extends IterativeRobot {
 	 * Used to calculate the robot distance from the wall
 	*/
 	double CalculateWallDistanceL(boolean averaged)
-	{
+	{	
 		double rawVoltage;
 		double wallDistance;
 
@@ -1228,6 +1253,7 @@ public class Robot extends IterativeRobot {
 						driveRevState++;
 						break;
 					case 1:
+				
 						//Drive the robot in reverse
 						if(autoDriveRobot(0.25, 0.25, 0, driveDistanceToReverse, use_Drive_Timer))
 						{
@@ -1571,6 +1597,18 @@ public class Robot extends IterativeRobot {
 		updateDashboard();
 		Timer.delay(0.005);
 	}
+	boolean killSwitch(){
+		if (overrideControl.getRawButton(1)){
+			easyMode = true;
+		} else if(overrideControl.getRawButton(2)){
+			easyMode = false;
+		}
+		if (easyMode == true && !overrideControl.getRawButton(8)){
+			return false;
+		} else
+			return true;
+
+}
 	/**
 	 * This function is called periodically during operator control
 	 */
@@ -1580,12 +1618,20 @@ public class Robot extends IterativeRobot {
 				driveGyro.reset();
 				while (isOperatorControl() && isEnabled())
 				{
-					if(!stoleDriveTrainControl && !stoleDriveTrainControl2)
-						tankDrive();
-					shootFuelControl();
+					if(killSwitch()){
+						if(!stoleDriveTrainControl && !stoleDriveTrainControl2){
+							tankDrive();
+							shootFuelControl();
+						}
+					} else 
+						{
+						stopShooter();
+						stopRobotDrive();
+						}
 					controlGearCatcher();
 					controlBallIntake();
 					takeOverDrive();
+					gearPiston();
 					updateDashboard();
 
 					calculateShotSpeedBasedOnDistance();
