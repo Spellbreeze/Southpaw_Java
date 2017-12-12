@@ -1,230 +1,191 @@
 package org.usfirst.frc.team4026.robot;
 
-import com.ctre.CANTalon;
 
-import edu.wpi.first.wpilibj.AnalogGyro;
-import edu.wpi.first.wpilibj.AnalogInput;
-import edu.wpi.first.wpilibj.CameraServer;
-import edu.wpi.first.wpilibj.Compressor;
-import edu.wpi.first.wpilibj.DigitalInput;
-import edu.wpi.first.wpilibj.DoubleSolenoid;
+import java.lang.*;
+import edu.wpi.first.wpilibj.*;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.Encoder;
-import edu.wpi.first.wpilibj.IterativeRobot;
-import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.RobotDrive;
-import edu.wpi.first.wpilibj.Servo;
-import edu.wpi.first.wpilibj.Talon;
-import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.VictorSP;
-import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
+import com.ctre.CANTalon;
+import com.ctre.CANTalon.TalonControlMode;
+
+
+
 /**
- * The VM is configured to automatically run this class, and to call the
- * functions corresponding to each mode, as described in the IterativeRobot
- * documentation. If you change the name of this class or the package after
- * creating this project, you must also update the manifest file in the resource
- * directory.
+ * This is a demo program showing the use of the RobotDrive class.
+ * The SampleRobot class is the base of a robot application that will
+ * automatically call your Autonomous and OperatorControl methods at the right
+ * time as controlled by the switches on the driver station or the field
+ * controls.
+ *
+ * WARNING: While it may look like a good choice to use for your code if you're
+ * inexperienced, don't. Unless you know what you are doing, complex code will
+ * be much more difficult under this system. Use IterativeRobot or Command-Based
+ * instead if you're new.
  */
 public class Robot extends IterativeRobot {
-	RobotDrive myRobot;
-	VictorSP leftDriveMotor, rightDriveMotor;
-	boolean exitvalue;
+    static final double PI = 3.14159265;
+    static final double GRAVITY_IN_S2 = 385.827;
+	static final double SHOOTER_ANGLE_DEGREES = 76;
+	static final double SHOOTER_WHEEL_DIAMETER_INCH = 2.375;
+	static final double SHOOTER_PCT_EFFICIENCY  = 99.5;
+	static final double DRIVE_TICKSPERREV = 64;
+	static final double SERVO_UP = 0.2;
+	static final double SERVO_DOWN = 1.0; //1.0
+	static final boolean USE_DRIVE_TIMER = false;
+	static final double MAX_BATTERY = 12.3;
+	
+	//frc::RobotDrive myRobot { 0, 1 }; // robot drive system
+	VictorSP rightDriveMotor;
+	VictorSP leftDriveMotor;
 	CANTalon shooterWheelFront;
-    CANTalon shooterWheelBack;
-    CANTalon ballIntakeRoller1;
-    CANTalon ballIntakeRoller2;
-    CANTalon gearCatcherScrew;
-    Servo shooterServo;
-   	Servo agitatorServo;
-    Talon agitatorMotor;
-    DoubleSolenoid gearCatcherValve;
-    Compressor compressorPointer;
-    
-    Joystick driveLeftStick;
-    Joystick driveRightStick;
-    Joystick manipulatorStick;
-    Joystick overrideControl;
-    
-    AnalogGyro driveGyro;
-   	AnalogInput wallDistanceSensorS;
-  	AnalogInput wallDistanceSensorR;
-   	AnalogInput wallDistanceSensorL;
+	CANTalon shooterWheelBack;
+	CANTalon ballIntakeRoller1;
+	CANTalon ballIntakeRoller2;
+	CANTalon gearCatcherScrew;
+	DoubleSolenoid hanger;
+	DoubleSolenoid shifter;
+	Compressor compressorPointer;
+	Servo shooterServo;
+	Servo agitatorServo;
+	Talon agitatorMotor;
+
+	Joystick mainDriverStick;
+	Joystick driveRightStick;
+	Joystick manipulatorStick;
+
+	AnalogGyro driveGyro;
+	AnalogInput wallDistanceSensorS;
+	AnalogInput wallDistanceSensorR;
+	AnalogInput wallDistanceSensorL;
 	DigitalInput photoElectric;
-   	DigitalInput photoElectricShooter;
-   	DigitalInput gearCatcherLimitLeft;
-   	DigitalInput gearCatcherLimitRight;
-    Encoder rightDriveEncoder;
-   	
-    
-    Timer autoDriveTimer;
+	DigitalInput photoElectricShooter;
+	DigitalInput gearCatcherLimitLeft;
+	DigitalInput gearCatcherLimitRight;
+	Encoder rightDriveEncoder;
+
+	Timer autoDriveTimer;
 	Timer agitatorTimer;
 	Timer genericTimer;
-	
-	final String defaultAuto = "Default";
-	final String customAuto = "My Auto";
-	String autoSelected;
-	SendableChooser<String> chooser = new SendableChooser<>();
-	boolean stoleDriveTrainControl;	//Set to true if an autonomous function is controlling the drive train during tele-op
+
+	boolean stoleDriveTrainControl;	//set to true if an autonomous function is controlling the drive train during tele-op
 	boolean stoleDriveTrainControl2; 	//For reverse 3 inch
 	boolean driveReverse;
-	boolean isGyroResetTelop;
+	boolean isGyroresetTelop;
 	boolean agitatorUp;
 	boolean genericTimerStarted;
-	boolean easyMode = false;
 	int autoState;
 	int gearCatcherState;
 	int shootFuelState;
 	int driveRevState;
 	double avgShooterVelocityError;
 	double gyroKi; //Integrator term for gyro
-	double pi = 3.14159265;
-	double gravity_in_S2 = 385.827;
-	int shooter_Angle_Degrees = 76;
-	double shooter_Wheel_Diameter_Inch = 2.375;
-	double shooter_PCT_Efficiency = 99.5;
-	int drive_TicksPerRev = 64;
-	double servo_Up = .2;
-	double servo_Down = 1.0;
-	boolean use_Drive_Timer;
-	double max_Battery = 12.3;
-	static final String autoNameDefault = "Default";
-	static final String autoNameGear1 = "Gear Location 1";
-	static final String autoNameGear2 = "Gear Location 2";
-	static final String autoNameGear3 = "Gear Location 3";
-	static final String autoNameTwoHopper = "Two Hopper";
-	//stoleDriveTrainControl = false;
-	//stoleDriveTrainControl2 = false;
-	//driveReverse = false;
-	//isGyroResetTelop = false;
-	//autoState = 0;
-	//gearCatcherState = 0;
-	//shootFuelState = 0;
-	//driveRevState = 0;
-	//agitatorUp = false;
-	//genericTimerStarted = false;
-	//avgShooterVelocityError = 0.0;
-	//gyroKi = 0.0;
-	
-	/**
-	 * This function is run when the robot is first started up and should be
-	 * used for any initialization code.
-	 */
-	@Override
-	public void robotInit() {
-		chooser.addDefault("Default Auto", autoNameDefault);
-		chooser.addObject("Gear Location 1", autoNameGear1);
-		chooser.addObject("Gear Location 2", autoNameGear2);
-		chooser.addObject("Gear Location 3", autoNameGear3);
-		chooser.addObject("Two Hopper", autoNameTwoHopper);
-		SmartDashboard.putData("Auto choices", chooser);
-		
-		rightDriveMotor = new VictorSP(0);
-		leftDriveMotor = new VictorSP(1);
-		
-		shooterWheelFront = new CANTalon(1);
-		shooterWheelBack = new CANTalon(5);
-		ballIntakeRoller1 = new CANTalon(2);
-		ballIntakeRoller2 = new CANTalon(4);
-		gearCatcherScrew = new CANTalon(3);
-		
-		agitatorServo = new Servo(5);
-		shooterServo = new Servo(4);
-		
-		agitatorMotor = new Talon(2);
-		
-		gearCatcherValve = new DoubleSolenoid(5,2);
-		compressorPointer = new Compressor();
-		compressorPointer.setClosedLoopControl(true);
-		
-		wallDistanceSensorS = new AnalogInput(3);
-		wallDistanceSensorR = new AnalogInput(2);
-		wallDistanceSensorL = new AnalogInput(1);
-		
-		gearCatcherLimitLeft = new DigitalInput(1);
-		gearCatcherLimitLeft = new DigitalInput(0);
-		photoElectric = new DigitalInput(2);
-		photoElectricShooter = new DigitalInput(3);
-		driveGyro = new AnalogGyro(0);
-		rightDriveEncoder = new Encoder(8,9,false);
-		
-		myRobot = new RobotDrive(leftDriveMotor, rightDriveMotor);
-       
-	    driveLeftStick = new Joystick(0);
-        driveRightStick = new Joystick(1);
-        manipulatorStick = new Joystick(2);
-        overrideControl = new Joystick(3);
-        
-        autoDriveTimer = new Timer();
-    	agitatorTimer = new Timer();
-    	genericTimer = new Timer();
-    	
-    	//Configure Shooter Talons
-   		shooterWheelFront.setFeedbackDevice(CANTalon.FeedbackDevice.CtreMagEncoder_Relative);
-   		shooterWheelFront.configNominalOutputVoltage(+0.0f, -0.0f);
-    	shooterWheelFront.configPeakOutputVoltage(+0.0f, -12.0f);  //Modify this to allow for just forward or just backward spin
-    	shooterWheelFront.changeControlMode(CANTalon.TalonControlMode.Speed);
-    	shooterWheelFront.reverseSensor(false);//idk if this equals c++ setSensorDirection
-    	shooterWheelFront.setAllowableClosedLoopErr(0);
-    	shooterWheelFront.setProfile(0);//idk if this equals c++ selectProfileSlot(0);
-    	shooterWheelFront.setF(0.02497); //0.0416
-    	shooterWheelFront.setP(0.0);
-    	shooterWheelFront.setI(0.0);
-    	shooterWheelFront.setD(0.0);
-    	//shooterWheelFront.Set(0.0);
+	//const double shootSpeedArray[3] = {1000.0, 3600.0, 4000.0};
+	//const double shootDistanceInchArray[3] = {36.0, 118.0, 160.0};
+	SendableChooser	chooser = new SendableChooser();
+	String autoNameDefault = "Default";
+	String autoNameGear1 = "Gear Location 1";
+	String autoNameGear2 = "Gear Location 2";
+	String autoNameGear3 = "Gear Location 3";
+	String autoNameTwoHopper = "Two Hopper";
 
+
+
+	void RobotInit() {
+		rightDriveMotor = new VictorSP( 0 );
+		leftDriveMotor = new VictorSP(1);
+		shooterWheelFront = new CANTalon( 1 );
+		shooterWheelBack = new CANTalon( 5 );
+		ballIntakeRoller1 = new CANTalon( 2 );
+		ballIntakeRoller2 = new CANTalon( 4 );
+		gearCatcherScrew = new CANTalon( 3 );
+		hanger = new DoubleSolenoid( 5,2 );
+		hanger.set(Value.kReverse);
+		shifter = new DoubleSolenoid( 4,3 );
+		shifter.set(Value.kReverse);
+		shooterServo = new Servo( 4 );
+		agitatorServo = new Servo( 5 );
+		agitatorMotor = new Talon( 2 );
+
+		mainDriverStick = new Joystick( 0 );
+		driveRightStick = new Joystick ( 1 );
+		manipulatorStick = new Joystick( 1 );
+
+		driveGyro = new AnalogGyro( 0 );
+		wallDistanceSensorS = new AnalogInput( 3 );
+		wallDistanceSensorR = new AnalogInput( 2 );
+		wallDistanceSensorL = new AnalogInput( 1 );
+		photoElectric = new DigitalInput( 2 );
+		photoElectricShooter = new DigitalInput( 3 );
+		gearCatcherLimitLeft = new DigitalInput( 1 );
+		gearCatcherLimitRight = new DigitalInput( 0 );
+		rightDriveEncoder = new Encoder(8 , 9, false);
+		
+		stoleDriveTrainControl = false;
+		stoleDriveTrainControl2 = false;
+		driveReverse = false;
+		isGyroresetTelop = false;
+		autoState = 0;
+		gearCatcherState = 0;
+		shootFuelState = 0;
+		driveRevState = 0;
+		agitatorUp = false;
+		genericTimerStarted = false;
+		avgShooterVelocityError = 0.0;
+		gyroKi = 0.0;
+		
+		//myRobot.SetExpiration(0.1);
+
+		chooser.addDefault("autoNameDefault", "autoNameDefault");
+		chooser.addObject("autoNameGear1", "autoNameGear1");
+		chooser.addObject(autoNameGear2, autoNameGear2);
+		chooser.addObject(autoNameGear3, autoNameGear3);
+		chooser.addObject(autoNameTwoHopper, autoNameTwoHopper);
+		SmartDashboard.putData("Auto Modes", chooser);
+
+		//Configure Shooter Talons
+		shooterWheelFront.setFeedbackDevice(CANTalon.FeedbackDevice.CtreMagEncoder_Relative);
+		shooterWheelFront.configNominalOutputVoltage(+0.0f, -0.0f);
+		shooterWheelFront.configPeakOutputVoltage(+0.0f, -12.0f);  //Modify this to allow for just forward or just backward spin
+		shooterWheelFront.changeControlMode(TalonControlMode.Speed);
+		shooterWheelFront.reverseSensor(false);// SetSensorDirection(false);
+		shooterWheelFront.setAllowableClosedLoopErr(0);
+		shooterWheelFront.setProfile(0);//SelectProfileSlot(0);
+		shooterWheelFront.setF(0.02497); //0.0416
+		shooterWheelFront.setP(0.0);
+		shooterWheelFront.setI(0.0);
+		shooterWheelFront.setD(0.0);
+		//shooterWheelFront.set(0.0);
 
 		shooterWheelBack.setFeedbackDevice(CANTalon.FeedbackDevice.CtreMagEncoder_Relative);
 		shooterWheelBack.configNominalOutputVoltage(+0.0f, -0.0f);
 		shooterWheelBack.configPeakOutputVoltage(+12.0f, -0.0f); //Modify this to allow for just forward or just backward spin
 		shooterWheelBack.changeControlMode(CANTalon.TalonControlMode.Speed);
-		shooterWheelBack.reverseSensor(false);//idk if this equals c++ setSensorDirection
+		shooterWheelBack.reverseSensor(false);//SetSensorDirection(false);
 		shooterWheelBack.setAllowableClosedLoopErr(0);
-		shooterWheelBack.setProfile(0);//idk if this equals c++ selectProfileSlot(0);
+		shooterWheelBack.setProfile(0);//SelectProfileSlot(0);
 		shooterWheelBack.setF(0.02497);
 		shooterWheelBack.setP(0.0);
 		shooterWheelBack.setI(0.0);
 		shooterWheelBack.setD(0.0);
-		//shooterWheelBack.Set(0.0);
-
+		//shooterWheelBack.set(0.0);
+		hanger.set(Value.kReverse);
 		shooterServo.set(1.0);
 		agitatorServo.set(0.9);
 		driveReverse = true;
 		driveGyro.reset();
 
-		gearCatcherValve.set(Value.kReverse);
 		//autoDriveTimer = new Timer();
 		//agitatorTimer = new Timer();
 
 		CameraServer.getInstance().startAutomaticCapture();
 	}
 
-	/**
-	 * This autonomous (along with the chooser code above) shows how to select
-	 * between different autonomous modes using the dashboard. The sendable
-	 * chooser code works with the Java SmartDashboard. If you prefer the
-	 * LabVIEW Dashboard, remove all of the chooser code and uncomment the
-	 * getString line to get the auto name from the text box below the Gyro
-	 *
-	 * You can add additional auto modes by adding additional comparisons to the
-	 * switch structure below with additional strings. If using the
-	 * SendableChooser make sure to add them to the chooser code above as well.
-	 */
-	@Override
-	public void autonomousInit() {
-		autoSelected = chooser.getSelected();
-		// autoSelected = SmartDashboard.getString("Auto Selector",
-		// defaultAuto);
-		System.out.println("Auto selected: " + autoSelected);
-	}
-
 	/*
 	 * Returns true when time in seconds has expired
 	 */
-	boolean WaitAsyncUntil(double timeInSec, boolean resetTimer)
+	boolean waitAsyncUntil(double timeInSec, boolean resetTimer)
 	{
 		if(!genericTimerStarted)
 		{
@@ -246,7 +207,7 @@ public class Robot extends IterativeRobot {
 	/*
 	 * Smooth joystick input for driving
 	 */
-	double smoothJoyStick(float joyInput)
+	double smoothJoyStick(double joyInput)
 	{
 		return Math.pow(joyInput,2);
 	}
@@ -254,7 +215,7 @@ public class Robot extends IterativeRobot {
 	/*
 	 * Switch the front and back of the robot
 	 */
-	void toggleDriveDirection()
+	/*void toggleDriveDirection()
 	{
 		if(driveLeftStick.getRawButton(3))
 		{
@@ -265,14 +226,12 @@ public class Robot extends IterativeRobot {
 			driveReverse=true;
 		}
 	}
-
 	/*
 	 * Allow for robot to drive straight using Gyro feedback
 	 */
 	void keepDriveStraight(double leftDriveVel, double rightDriveVel, double targetAngle)
 	{
-		double error = 0;
-		double correctionFactor;
+		double error = 0, correctionFactor;
 		error = targetAngle - driveGyro.getAngle();
 		correctionFactor = (error/75.0);
 
@@ -303,14 +262,6 @@ public class Robot extends IterativeRobot {
 	 */
 	boolean shouldIHelpDriverDriveStraight()
 	{
-		double right = driveRightStick.getY();
-		double left = driveLeftStick.getY();
-		double diff = Math.abs(right-left);
-		boolean sameSign = ((right < 0.0 && left < 0.0) || (right > 0.0 && left > 0.0))  ? true : false;
-
-		if(sameSign && (diff < 0.2))
-			return true;
-
 		return false;
 	}
 
@@ -319,14 +270,14 @@ public class Robot extends IterativeRobot {
 	 */
 	void tankDrive()
 	{
-		toggleDriveDirection();
-		//double right = smoothJoyStick(driveRightStick.GetY());
-		//double left = smoothJoyStick(driveLeftStick.GetY());
-		double right = driveRightStick.getY();
-		double left = driveLeftStick.getY();
+		//toggleDriveDirection();
+		//double right = smoothJoyStick(driveRightStick.getY());
+		//double left = smoothJoyStick(driveLeftStick.getY());
+		double right = mainDriverStick.getY();
+		double left = mainDriverStick.getThrottle();
 
 		//Cut speed in half
-		if(manipulatorStick.getRawButton(7) || easyMode)
+		if(mainDriverStick.getRawButton(7))
 		{
 			right /= 2.0;
 			left /= 2.0;
@@ -334,7 +285,7 @@ public class Robot extends IterativeRobot {
 
 		double avgStick = (right + left) / 2.0;
 
-		if(!driveRightStick.getTrigger() && !shouldIHelpDriverDriveStraight())
+		if(!mainDriverStick.getRawButton(8) && !shouldIHelpDriverDriveStraight())
 		{
 			if (driveReverse)
 			{
@@ -346,14 +297,14 @@ public class Robot extends IterativeRobot {
 				leftDriveMotor.set(left);
 				rightDriveMotor.set(-right);
 			}
-			isGyroResetTelop = false;
+			isGyroresetTelop = false;
 		}
 		else
 		{
-			if(isGyroResetTelop == false)
+			if(isGyroresetTelop == false)
 			{
 				driveGyro.reset();
-				isGyroResetTelop = true;
+				isGyroresetTelop = true;
 			}
 			if (driveReverse)
 			{
@@ -402,7 +353,7 @@ public class Robot extends IterativeRobot {
 	 */
 	void stopShooter()
 	{
-		shooterServo.set(servo_Down);
+		shooterServo.set(SERVO_DOWN);
 
 		shooterWheelFront.setP(0.0);
 		shooterWheelFront.setI(0.0);
@@ -428,17 +379,17 @@ public class Robot extends IterativeRobot {
 			if(frontVel != 0.0) //0.0 indicated error
 			{
 				if(spinShooterWheels(frontVel, backVel))
-					shooterServo.set(servo_Up);
+					shooterServo.set(SERVO_UP);
 				else
-					shooterServo.set(servo_Down);
+					shooterServo.set(SERVO_DOWN);
 			}
 		}
 		else
 		{
 			if(spinShooterWheels(frontVel, backVel)) //3400, 3500
-				shooterServo.set(servo_Up);
+				shooterServo.set(SERVO_UP);
 			else
-				shooterServo.set(servo_Down);
+				shooterServo.set(SERVO_DOWN);
 		}
 
 		if(!agitatorUp && (agitatorTimer.get() > 1.0))
@@ -460,7 +411,7 @@ public class Robot extends IterativeRobot {
 	}
 
 	/*
-	 * Simple manual shooter control.  A more complex shooting scheme will be needed to step through opening the door and waiting until the shooter is at speed.
+	 * Simple manual shooter control.  A more complex shooting scheme will be needed to step through opening the door and Waiting until the shooter is at speed.
 	 */
 	void shootFuelControl()
 	{
@@ -470,10 +421,10 @@ public class Robot extends IterativeRobot {
 		if(manipulatorStick.getY() > 0.1 || manipulatorStick.getY() < -0.1)
 		{
 			/*
-			if(spinShooterWheels(manipulatorStick.GetY() * 3600.0, manipulatorStick.GetY() * 3400.0))
-				shooterServo.Set(SERVO_UP);
+			if(spinShooterWheels(manipulatorStick.getY() * 3600.0, manipulatorStick.getY() * 3400.0))
+				shooterServo.set(SERVO_UP);
 			else
-				shooterServo.Set(SERVO_DOWN);
+				shooterServo.set(SERVO_DOWN);
 			 */
 		}
 		else if(manipulatorStick.getRawButton(1) || manipulatorStick.getRawButton(2))
@@ -482,7 +433,7 @@ public class Robot extends IterativeRobot {
 			switch(shootFuelState)
 			{
 				case 0:
-					resetDrive(use_Drive_Timer);
+					resetDrive(USE_DRIVE_TIMER);
 					shootFuelState++;
 					break;
 
@@ -491,7 +442,7 @@ public class Robot extends IterativeRobot {
 					if(turnGyro(-90.0, 0.3))
 					{
 						Timer.delay(0.25);
-						resetDrive(use_Drive_Timer);
+						resetDrive(USE_DRIVE_TIMER);
 						shootFuelState = -1;
 					}
 					if(!photoElectricShooter.get())
@@ -560,7 +511,7 @@ public class Robot extends IterativeRobot {
 	void controlGearCatcher()
 	{
 		//Should set a dead-zone for this despite the speed controllers having one built in
-		//gearCatcherScrew.Set(manipulatorStick.GetX());
+		//gearCatcherScrew.set(manipulatorStick.getX());
 		if(manipulatorStick.getRawButton(3))
 		{
 			findGearCatcherLift();
@@ -582,17 +533,12 @@ public class Robot extends IterativeRobot {
 
 			gearCatcherState = 0;
 		}
-	}
-	
-	void gearPiston()
-	{
-		if(manipulatorStick.getRawButton(4))
-		{
-			gearCatcherValve.set(Value.kForward);
+		if(manipulatorStick.getRawButton(4)){
+			hanger.set(Value.kForward);
 		}
 		else
 		{
-			gearCatcherValve.set(Value.kReverse);
+			hanger.set(Value.kReverse);
 		}
 	}
 
@@ -640,14 +586,14 @@ public class Robot extends IterativeRobot {
 		}
 		else
 		{
-			//leftDriveEncoder.Reset();
+			//leftDriveEncoder.reset();
 			rightDriveEncoder.reset();
 			resetGyroAngle();
 		}
 	}
 
 	/*
-	 * Reset the Gyro position
+	 * reset the Gyro position
 	 */
 	void resetGyroAngle()
 	{
@@ -659,14 +605,15 @@ public class Robot extends IterativeRobot {
 	 */
 	double convertDriveTicksToInches(int encTicks)
 	{
-		return (encTicks / drive_TicksPerRev) * 3.14 * 4.0;
+		return (encTicks / DRIVE_TICKSPERREV) * 3.14 * 4.0;
 	}
 
 	/*
 	 * Used during autonomous to turn the robot to a specified angle.
 	 */
 	boolean turnGyro(double rAngle, double maxTurnSpeed)
-	{
+	{	 ;
+		
 		double error = 0.0;
 		double speedToSet = 0.0;
 		//Positive gyro angle means turning left
@@ -734,77 +681,8 @@ public class Robot extends IterativeRobot {
 		}
 
 		return false;
-}
-	boolean turnGyro(double rAngle)
-	{	double maxTurnSpeed = 0.5;
-		double error = 0.0;
-		double speedToSet = 0.0;
-		//Positive gyro angle means turning left
-		if(rAngle < driveGyro.getAngle())
-		{
-			//Start accumulating error if the rate of turning is < 2 deg/sec
-			if(driveGyro.getRate() < 2.0)
-			{
-				gyroKi += 0.001;
-				if(gyroKi > 0.2) //Cap the integral term
-					gyroKi = 0.2;
-			}
+	}
 
-			error = Math.abs(rAngle) - driveGyro.getAngle();
-			if(driveGyro.getAngle() <= Math.abs(rAngle) && Math.abs(error) > 2.0)
-			{
-				//turn left
-				speedToSet = (error/270) + 0.2 + gyroKi; //140 0.2
-				if(Math.abs(speedToSet) > maxTurnSpeed)
-					speedToSet = maxTurnSpeed * (speedToSet < 0.0 ? -1.0 : 1.0);
-				leftDriveMotor.set(speedToSet * batteryCompensationPct()); //0.8
-				rightDriveMotor.set(speedToSet * batteryCompensationPct()); //0.8
-			}
-			else
-			{
-				gyroKi = 0.0;
-				stopRobotDrive();
-				//if(WaitAsyncUntil(0.5,true))
-					return true;
-			}
-		}
-		else if(rAngle > driveGyro.getAngle())
-		{
-			//Start accumulating error if the rate of turning is < 2 deg/sec
-			if(driveGyro.getRate() < 2.0)
-			{
-				gyroKi += 0.001;
-				if(gyroKi > 0.2) //Cap the integral term
-					gyroKi = 0.2;
-			}
-
-			error = -rAngle - driveGyro.getAngle();
-			if(driveGyro.getAngle() >= -rAngle && Math.abs(error) > 2.0)
-			{
-				//turn right
-				speedToSet = (error/270) - 0.2 - gyroKi;
-				if(Math.abs(speedToSet) > maxTurnSpeed)
-					speedToSet = maxTurnSpeed * (speedToSet < 0.0 ? -1.0 : 1.0);
-				leftDriveMotor.set(speedToSet * batteryCompensationPct()); //-0.8
-				rightDriveMotor.set(speedToSet * batteryCompensationPct()); //-0.8
-			}
-			else
-			{
-				gyroKi = 0.0;
-				stopRobotDrive();
-				//if(WaitAsyncUntil(0.5,true))
-					return true;
-			}
-		}
-		else
-		{
-			gyroKi = 0.0;
-			stopRobotDrive();
-			return true;
-		}
-
-		return false;
-}
 	/*
 	 * Used during autonomous to drive the robot fwd or back to a location
 	 * Prior to calling this function you must call resetDrive
@@ -818,8 +696,8 @@ public class Robot extends IterativeRobot {
 		{
 			if(autoDriveTimer.get() <= timeSec)
 			{
-				//leftDriveMotor.Set(-velocityLeft);
-				//rightDriveMotor.Set(velocityRight);
+				//leftDriveMotor.set(-velocityLeft);
+				//rightDriveMotor.set(velocityRight);
 				keepDriveStraight(velocityLeft, velocityRight, 0);
 			}
 			else
@@ -833,8 +711,8 @@ public class Robot extends IterativeRobot {
 			driveDistInch = Math.abs(convertDriveTicksToInches(rightDriveEncoder.get()));
 			if(driveDistInch < Math.abs(targetDistanceInch))
 			{
-				//leftDriveMotor.Set(-velocityLeft);
-				//rightDriveMotor.Set(velocityRight);
+				//leftDriveMotor.set(-velocityLeft);
+				//rightDriveMotor.set(velocityRight);
 				err = Math.abs(targetDistanceInch) - driveDistInch;
 				percentPower = (err / Math.abs(targetDistanceInch));
 
@@ -877,8 +755,8 @@ public class Robot extends IterativeRobot {
 
 		double shooterVelocity = 0.0;
 		double shooterCalculatedRPM = 0.0;
-		shooterVelocity = Math.sqrt(((currentShooterDistanceInch * 2.0) * gravity_in_S2) / Math.sin(2.0 * shooter_Angle_Degrees * pi / 180.0));
-		shooterCalculatedRPM = (shooterVelocity * 60.0)/ (shooter_Wheel_Diameter_Inch * pi) * (shooter_PCT_Efficiency / 100.0);
+		shooterVelocity = Math.sqrt(((currentShooterDistanceInch * 2.0) * GRAVITY_IN_S2) / Math.sin(2.0 * SHOOTER_ANGLE_DEGREES * PI / 180.0));
+		shooterCalculatedRPM = (shooterVelocity * 60.0)/ (SHOOTER_WHEEL_DIAMETER_INCH * PI) * (SHOOTER_PCT_EFFICIENCY / 100.0);
 
 		SmartDashboard.putNumber("Calculated Shot Speed (RPM): ", shooterCalculatedRPM);
 
@@ -899,8 +777,8 @@ public class Robot extends IterativeRobot {
 			rawVoltage = (double)(wallDistanceSensorS.getVoltage());
 
 		//MB1030
-		double VFiveMM1 = 0.009671875;
-		wallDistance = rawVoltage / VFiveMM1;
+		double VFiveMM = 0.009671875;
+		wallDistance = rawVoltage / VFiveMM;
 
 		return wallDistance;
 	}
@@ -909,8 +787,8 @@ public class Robot extends IterativeRobot {
 	 * Used to calculate the robot distance from the wall
 	 */
 	double CalculateWallDistanceR(boolean averaged)
-	{
-		
+	{	 
+	
 		double rawVoltage;
 		double wallDistance;
 
@@ -920,8 +798,8 @@ public class Robot extends IterativeRobot {
 			rawVoltage = (double)(wallDistanceSensorR.getVoltage());
 
 		//MB1013
-		double VFiveMM2 = 0.00488; //Old numbers 0.0048359375;  //((4.952 / 5120) * 5);
-		wallDistance = ((rawVoltage * 5 * 0.0393) / VFiveMM2);  //Units inch
+		double VFiveMM = 0.00488; //Old numbers 0.0048359375;  //((4.952 / 5120) * 5);
+		wallDistance = ((rawVoltage * 5 * 0.0393) / VFiveMM);  //Units inch
 
 		//MB1030
 		//double VFiveMM = 0.009671875;
@@ -956,7 +834,7 @@ public class Robot extends IterativeRobot {
 	double batteryCompensationPct()
 	{
 		double batteryScaleFactor = 0.0;
-		batteryScaleFactor = max_Battery / DriverStation.getInstance().getBatteryVoltage();
+		batteryScaleFactor = MAX_BATTERY / DriverStation.getInstance().getBatteryVoltage();
 
 		return batteryScaleFactor;
 	}
@@ -966,7 +844,7 @@ public class Robot extends IterativeRobot {
 	 */
 	void updateDashboard()
 	{
-		//SmartDashboard.putNumber("Wall Distance Right: ", CalculateWallDistanceR(false));
+		//SmartDashboard::PutNumber("Wall Distance Right: ", CalculateWallDistanceR(false));
 		SmartDashboard.putNumber("Wall Distance Right: ", shooterWheelBack.getSpeed());
 		SmartDashboard.putNumber("Wall Distance Left: ", CalculateWallDistanceL(false));
 		SmartDashboard.putNumber("Wall Distance Shooter: ", CalculateWallDistanceShooter(false));
@@ -993,7 +871,7 @@ public class Robot extends IterativeRobot {
 		double angleToTurnDegrees = 0.0;
 		try
 		{
-			angleToTurnDegrees = (Math.tan((CalculateWallDistanceR(false) - CalculateWallDistanceL(false)) / 22.625) * 180.0) / pi;
+			angleToTurnDegrees = (Math.atan((CalculateWallDistanceR(false) - CalculateWallDistanceL(false)) / 22.625) * 180.0) / PI;
 		}
 		catch(Exception e)
 		{
@@ -1072,13 +950,13 @@ public class Robot extends IterativeRobot {
 	}
 
 	/*
-	 * Get both middle and close hopper of balls (RED)
+	 * get both middle and close hopper of balls (RED)
 	 * I've assumed that negative angles will turn clockwise relative to the gear catcher being the front
 	 * I've assume positive drive motor speeds will drive the robot in reverse (relative to the gear catcher being the front)
 	 */
 	void score_TwoHopper_Autonomous(boolean isRED)
 	{
-		 double sVel = 0.0;
+		double sVel = 0.0;
 		double angleMultiplier = 1.0;
 		double angleToSearchForBoiler = -60.0;
 		double closeHopperDistance = 84.0 + 34.0; //Red Alliance 84.0 52.0
@@ -1093,48 +971,48 @@ public class Robot extends IterativeRobot {
 		switch(autoState)
 		{
 			case 0:
-				resetDrive(use_Drive_Timer);
+				resetDrive(USE_DRIVE_TIMER);
 				autoState++;
 				break;
 			case 1:
 				//Drive the robot in reverse to get to middle hopper
-				if(autoDriveRobot(0.5, 0.5, 0, closeHopperDistance, use_Drive_Timer))
+				if(autoDriveRobot(0.5, 0.5, 0, closeHopperDistance, USE_DRIVE_TIMER))
 				{
 					Timer.delay(0.25);
-					resetDrive(use_Drive_Timer);
+					resetDrive(USE_DRIVE_TIMER);
 					autoState++;
 				}
 				break;
 			case 2:
 				//Turn intake side towards hopper
-				if(turnGyro(-90.0 * angleMultiplier))
+				if(turnGyro(-90.0 * angleMultiplier, .5))
 				{
-					//Timer.delay(0.25);
-					resetDrive(use_Drive_Timer);
+					//Wait(0.25);
+					resetDrive(USE_DRIVE_TIMER);
 					autoState++;
 				}
 				break;
 			case 3:
 				//Drive the robot reverse to trigger hopper
-				if(autoDriveRobot(0.6, 0.6, 1.5, 84, use_Drive_Timer) || WaitAsyncUntil(2.0, true))
+				if(autoDriveRobot(0.6, 0.6, 1.5, 84, USE_DRIVE_TIMER) || waitAsyncUntil(2.0, true))
 				{
-					resetDrive(use_Drive_Timer);
+					resetDrive(USE_DRIVE_TIMER);
 					autoState++;
 				}
 				break;
 			case 4:
 				//Wait some time for the hopper to empty into robot
-				if(WaitAsyncUntil(1.0, true))
+				if(waitAsyncUntil(1.0, true))
 				{
-					resetDrive(use_Drive_Timer);
+					resetDrive(USE_DRIVE_TIMER);
 					autoState++;
 				}
 				break;
 			case 5:
 				//Drive the robot forward away from hopper
-				if(autoDriveRobot(-0.5, -0.5, 0, 36, use_Drive_Timer))
+				if(autoDriveRobot(-0.5, -0.5, 0, 36, USE_DRIVE_TIMER))
 				{
-					resetDrive(use_Drive_Timer);
+					resetDrive(USE_DRIVE_TIMER);
 					autoState++;
 				}
 				break;
@@ -1143,20 +1021,20 @@ public class Robot extends IterativeRobot {
 				if(!isRED)
 				{
 					//BLUE
-					if(turnGyro(-160.0))
+					if(turnGyro(-160.0 , .5))
 					{
 						Timer.delay(0.25);
-						resetDrive(use_Drive_Timer);
+						resetDrive(USE_DRIVE_TIMER);
 						autoState++;
 					}
 				}
 				else
 				{
 					//RED
-					if(turnGyro(70.0)) //60
+					if(turnGyro(70.0 , .5)) //60
 					{
 						Timer.delay(0.25);
-						resetDrive(use_Drive_Timer);
+						resetDrive(USE_DRIVE_TIMER);
 						autoState++;
 					}
 				}
@@ -1165,9 +1043,9 @@ public class Robot extends IterativeRobot {
 				//Drive the robot forward away from hopper
 				if(isRED)
 				{
-					if(autoDriveRobot(-0.5, -0.5, 0, 34, use_Drive_Timer))  //36
+					if(autoDriveRobot(-0.5, -0.5, 0, 34, USE_DRIVE_TIMER))  //36
 					{
-						resetDrive(use_Drive_Timer);
+						resetDrive(USE_DRIVE_TIMER);
 						autoState++;
 					}
 				}
@@ -1180,7 +1058,7 @@ public class Robot extends IterativeRobot {
 				if(turnGyro(angleToSearchForBoiler, 0.3))
 				{
 					Timer.delay(0.25);
-					resetDrive(use_Drive_Timer);
+					resetDrive(USE_DRIVE_TIMER);
 					autoState = -1;
 				}
 				if(!photoElectricShooter.get())
@@ -1190,7 +1068,7 @@ public class Robot extends IterativeRobot {
 					//sVel = calculateShotSpeedBasedOnDistance();
 
 					//agitatorUp = false;
-					//agitatorTimer.Reset();
+					//agitatorTimer.reset();
 					//agitatorTimer.Start();
 
 					autoState++;
@@ -1201,7 +1079,7 @@ public class Robot extends IterativeRobot {
 				if(turnGyro(4.0, 0.3))
 				{
 					Timer.delay(0.25);
-					resetDrive(use_Drive_Timer);
+					resetDrive(USE_DRIVE_TIMER);
 
 					stopRobotDrive();
 
@@ -1215,10 +1093,10 @@ public class Robot extends IterativeRobot {
 				break;
 			case 10:
 				shootFuel(true, sVel, sVel);
-				if(WaitAsyncUntil(7.0, true))
+				if(waitAsyncUntil(7.0, true))
 				{
 					stopShooter();
-					resetDrive(use_Drive_Timer);
+					resetDrive(USE_DRIVE_TIMER);
 					//autoState++;
 					autoState = -1;
 				}
@@ -1232,16 +1110,10 @@ public class Robot extends IterativeRobot {
 
 	void takeOverDrive()
 	{
-		if(driveLeftStick.getRawButton(10) || driveLeftStick.getRawButton(7))
-		{
-			stoleDriveTrainControl2 = true;
-			reverseNInches(3.0);
-		}
-		else
-		{
+
 			stoleDriveTrainControl2 = false;
 			driveRevState = 0;
-		}
+
 	}
 
 	void reverseNInches(double driveDistanceToReverse)
@@ -1249,15 +1121,14 @@ public class Robot extends IterativeRobot {
 		switch(driveRevState)
 				{
 					case 0:
-						resetDrive(use_Drive_Timer);
+						resetDrive(USE_DRIVE_TIMER);
 						driveRevState++;
 						break;
 					case 1:
-				
 						//Drive the robot in reverse
-						if(autoDriveRobot(0.25, 0.25, 0, driveDistanceToReverse, use_Drive_Timer))
+						if(autoDriveRobot(0.25, 0.25, 0, driveDistanceToReverse, USE_DRIVE_TIMER))
 						{
-							resetDrive(use_Drive_Timer);
+							resetDrive(USE_DRIVE_TIMER);
 							driveRevState++;
 						}
 						break;
@@ -1276,13 +1147,12 @@ public class Robot extends IterativeRobot {
 	 */
 	void score_GearPosition1_Autonomous(boolean isRED, boolean shootFuelAfterGear)
 	{
-		shootFuelAfterGear = true;
 		double angleErrorFromUltrasonics = 0.0;
 		double angleToTurn = -113.0; //For RED -120
 		double angleForBoiler = 110.0; //90
 		double distanceToDrive = 76.0; //For RED. was 72
-		float distanceForGearPlacement = 36; //30
-		 double sVel = 0.0;
+		double distanceForGearPlacement = 36; //30
+		double sVel = 0.0;
 
 		if(!isRED)
 		{
@@ -1294,14 +1164,14 @@ public class Robot extends IterativeRobot {
 		switch(autoState)
 		{
 			case 0:
-				resetDrive(use_Drive_Timer);
+				resetDrive(USE_DRIVE_TIMER);
 				autoState++;
 				break;
 			case 1:
 				//Drive the robot in reverse
-				if(autoDriveRobot(0.5, 0.5, 0, distanceToDrive, use_Drive_Timer))
+				if(autoDriveRobot(0.5, 0.5, 0, distanceToDrive, USE_DRIVE_TIMER))
 				{
-					resetDrive(use_Drive_Timer);
+					resetDrive(USE_DRIVE_TIMER);
 					autoState++;
 					//autoState= -1;
 				}
@@ -1310,7 +1180,7 @@ public class Robot extends IterativeRobot {
 				if(turnGyro(angleToTurn, 0.35))
 				{
 					Timer.delay(0.25);
-					resetDrive(use_Drive_Timer);
+					resetDrive(USE_DRIVE_TIMER);
 					autoState++;
 				}
 				break;
@@ -1320,9 +1190,9 @@ public class Robot extends IterativeRobot {
 				findGearCatcherLift();
 
 				//Drive the robot forward to get a bit closer to airship
-				if(autoDriveRobot(-0.4, -0.4, 1.3, 20, use_Drive_Timer))
+				if(autoDriveRobot(-0.4, -0.4, 1.3, 20, USE_DRIVE_TIMER))
 				{
-					resetDrive(use_Drive_Timer);
+					resetDrive(USE_DRIVE_TIMER);
 					//autoState++;
 					autoState = 6;//6
 				}
@@ -1336,14 +1206,14 @@ public class Robot extends IterativeRobot {
 				}
 				else
 				{
-					resetDrive(use_Drive_Timer);
+					resetDrive(USE_DRIVE_TIMER);
 					autoState++;
 				}
 				break;
 			case 5:
-				if(turnGyro(angleErrorFromUltrasonics))
+				if(turnGyro(angleErrorFromUltrasonics , .5))
 				{
-					resetDrive(use_Drive_Timer);
+					resetDrive(USE_DRIVE_TIMER);
 					autoState++;
 				}
 				break;
@@ -1351,7 +1221,7 @@ public class Robot extends IterativeRobot {
 				//Search for the peg using the photoelectric sensor
 				if(findGearCatcherLift())
 				{
-					resetDrive(use_Drive_Timer);
+					resetDrive(USE_DRIVE_TIMER);
 					autoState++;
 				}
 				/*else if(WaitAsyncUntil(5.0, true))
@@ -1361,25 +1231,25 @@ public class Robot extends IterativeRobot {
 				break;
 			case 7:
 				//Drive the robot forward to get the gear on the peg
-				if(autoDriveRobot(-0.3, -0.3, 0.5, distanceForGearPlacement, use_Drive_Timer) || WaitAsyncUntil(2.0, true))
+				if(autoDriveRobot(-0.3, -0.3, 0.5, distanceForGearPlacement, USE_DRIVE_TIMER) || waitAsyncUntil(2.0, true))
 				{
-					resetDrive(use_Drive_Timer);
+					resetDrive(USE_DRIVE_TIMER);
 					autoState++;
 				}
 				break;
 			case 8:
 				//Wait some time for the pilot to remove the gear.  Would be better to have a sensor for this.
-				if(WaitAsyncUntil(2.0, true))
+				if(waitAsyncUntil(2.0, true))
 				{
-					resetDrive(use_Drive_Timer);
+					resetDrive(USE_DRIVE_TIMER);
 					autoState++;
 				}
 				break;
 			case 9:
 				//Drive the robot reverse
-				if(autoDriveRobot(0.4, 0.4, 0.6, 26, use_Drive_Timer))
+				if(autoDriveRobot(0.4, 0.4, 0.6, 26, USE_DRIVE_TIMER))
 				{
-					resetDrive(use_Drive_Timer);
+					resetDrive(USE_DRIVE_TIMER);
 
 					if(shootFuelAfterGear)
 						autoState++;
@@ -1388,15 +1258,15 @@ public class Robot extends IterativeRobot {
 				}
 				break;
 			case 10:
-				if(turnGyro(angleForBoiler))
+				if(turnGyro(angleForBoiler , .5))
 				{
-					Timer.delay(0.25);
+				Timer.delay(0.25);
 
 					//agitatorUp = false;
-					//agitatorTimer.Reset();
+					//agitatorTimer.reset();
 					//agitatorTimer.Start();
 
-					resetDrive(use_Drive_Timer);
+					resetDrive(USE_DRIVE_TIMER);
 					autoState++;
 				}
 				break;
@@ -1404,7 +1274,7 @@ public class Robot extends IterativeRobot {
 				if(turnGyro(-1.0 * angleForBoiler, 0.3))
 				{
 					Timer.delay(0.25);
-					resetDrive(use_Drive_Timer);
+					resetDrive(USE_DRIVE_TIMER);
 					autoState = -1;
 				}
 				if(!photoElectricShooter.get())
@@ -1421,10 +1291,10 @@ public class Robot extends IterativeRobot {
 				break;
 			case 12:
 				shootFuel(true, sVel, sVel);
-				if(WaitAsyncUntil(5.0, true))
+				if(waitAsyncUntil(5.0, true))
 				{
 					stopShooter();
-					resetDrive(use_Drive_Timer);
+					resetDrive(USE_DRIVE_TIMER);
 					autoState++;
 				}
 				break;
@@ -1454,7 +1324,7 @@ public class Robot extends IterativeRobot {
 		switch(autoState)
 		{
 			case 0:
-				resetDrive(use_Drive_Timer);
+				resetDrive(USE_DRIVE_TIMER);
 				autoState++;
 				break;
 			case 1:
@@ -1463,9 +1333,9 @@ public class Robot extends IterativeRobot {
 				findGearCatcherLift();
 
 				//Drive the robot forward
-				if(autoDriveRobot(-0.5, -0.5, 0, distanceToDrive, use_Drive_Timer))
+				if(autoDriveRobot(-0.5, -0.5, 0, distanceToDrive, USE_DRIVE_TIMER))
 				{
-					resetDrive(use_Drive_Timer);
+					resetDrive(USE_DRIVE_TIMER);
 					autoState++;
 					//autoState= -1;
 				}
@@ -1474,7 +1344,7 @@ public class Robot extends IterativeRobot {
 				//Search for the peg using the photoelectric sensor
 				if(findGearCatcherLift())
 				{
-					resetDrive(use_Drive_Timer);
+					resetDrive(USE_DRIVE_TIMER);
 					autoState++;
 				}
 				/*else if(WaitAsyncUntil(5.0, true))
@@ -1484,34 +1354,34 @@ public class Robot extends IterativeRobot {
 				break;
 			case 3:
 				//Drive the robot forward to get the gear on the peg
-				if(autoDriveRobot(-0.3, -0.3, 0.5, 36, use_Drive_Timer) || WaitAsyncUntil(1.5, true))
+				if(autoDriveRobot(-0.3, -0.3, 0.5, 36, USE_DRIVE_TIMER) || waitAsyncUntil(1.5, true))
 				{
-					resetDrive(use_Drive_Timer);
+					resetDrive(USE_DRIVE_TIMER);
 					autoState++;
 				}
 				break;
 			case 4:
 				//Wait some time for the pilot to remove the gear.  Would be better to have a sensor for this.
-				if(WaitAsyncUntil(3.0, true))
+				if(waitAsyncUntil(3.0, true))
 				{
-					resetDrive(use_Drive_Timer);
+					resetDrive(USE_DRIVE_TIMER);
 					autoState++;
 				}
 				break;
 			case 5:
 				//Drive the robot reverse
-				if(autoDriveRobot(0.4, 0.4, 0.6, 24, use_Drive_Timer))
+				if(autoDriveRobot(0.4, 0.4, 0.6, 24, USE_DRIVE_TIMER))
 				{
-					resetDrive(use_Drive_Timer);
+					resetDrive(USE_DRIVE_TIMER);
 					autoState++;
 				}
 				break;
 			case 6:
 				if(isRED)
 				{
-					if(turnGyro(-180.0))
+					if(turnGyro(-180.0 , .5))
 					{
-						resetDrive(use_Drive_Timer);
+						resetDrive(USE_DRIVE_TIMER);
 						autoState++;
 					}
 				}
@@ -1524,7 +1394,7 @@ public class Robot extends IterativeRobot {
 				if(turnGyro(angleForBoiler, 0.3))
 				{
 					Timer.delay(0.25);
-					resetDrive(use_Drive_Timer);
+					resetDrive(USE_DRIVE_TIMER);
 
 					stopRobotDrive();
 
@@ -1546,10 +1416,10 @@ public class Robot extends IterativeRobot {
 				{
 					shootFuel(false, 4250.0, 4250.0); //3900
 				}
-				if(WaitAsyncUntil(5.0, true))
+				if(waitAsyncUntil(5.0, true))
 				{
 					stopShooter();
-					resetDrive(use_Drive_Timer);
+					resetDrive(USE_DRIVE_TIMER);
 					autoState++;
 				}
 				break;
@@ -1558,93 +1428,95 @@ public class Robot extends IterativeRobot {
 				stopRobotDrive();
 				break;
 		}
-}
+	}
 
-	/**
-	 * This function is called periodically during autonomous
+
+	/*
+	 * This autonomous (along with the chooser code above) shows how to select
+	 * between different autonomous modes using the dashboard. The sendable
+	 * chooser code works with the Java SmartDashboard. If you prefer the
+	 * LabVIEW Dashboard, remove all of the chooser code and uncomment the
+	 * getString line to get the auto name from the text box below the Gyro.
+	 *
+	 * You can add additional auto modes by adding additional comparisons to the
+	 * if-else structure below with additional strings. If using the
+	 * SendableChooser make sure to add them to the chooser code above as well.
 	 */
-	@Override
-	public void autonomousPeriodic() {
+	void Autonomous() {
 		DriverStation.Alliance allianceColor;
 		boolean isAllianceRED = false;
-		System.out.println("Auto Selected:" + autoSelected);
+		Object autoSelected = chooser.getSelected();
+		// std::string autoSelected = frc::SmartDashboard::getString("Auto Selector", autoNameDefault);
+		System.out.println( "Auto selected: " + autoSelected.toString());
+
 		gearCatcherState = 0;
 		autoState = 0;
+
+		//Determine current alliance color
 		allianceColor = DriverStation.getInstance().getAlliance();
 		if(allianceColor == DriverStation.Alliance.Red)
 		{
 			isAllianceRED = true;
 		}
 		updateDashboard();
-		switch (autoSelected) {
-		case autoNameGear1:
-			score_GearPosition1_Autonomous(isAllianceRED, true); //set second param to false to retry gear
-			break;
-		case autoNameGear2:
-			score_GearPosition2_Autonomous(isAllianceRED, true);
-			break;
-		case autoNameGear3:
-			score_GearPosition1_Autonomous(!isAllianceRED, false);
-			break;
-		case autoNameTwoHopper:
-			score_TwoHopper_Autonomous(isAllianceRED);
-			break;
-		case defaultAuto:
-		default:
-			doNothingAutonomous();
-			break;
-		}
-		updateDashboard();
-		Timer.delay(0.005);
-	}
-	boolean killSwitch(){
-		if (overrideControl.getRawButton(1)){
-			easyMode = true;
-		} else if(overrideControl.getRawButton(2)){
-			easyMode = false;
-		}
-		if (easyMode == true && !overrideControl.getRawButton(8)){
-			return false;
-		} else
-			return true;
 
-}
-	/**
-	 * This function is called periodically during operator control
+		while (isAutonomous() && isEnabled())
+		{
+			if(autoSelected == autoNameGear1)
+			{
+				score_GearPosition1_Autonomous(isAllianceRED, true); //set second param to false to retry gear
+			}
+			else if (autoSelected == autoNameGear2)
+			{
+				score_GearPosition2_Autonomous(isAllianceRED, true);
+			}
+			else if (autoSelected == autoNameGear3)
+			{
+				score_GearPosition1_Autonomous(!isAllianceRED, false);
+			}
+			else if (autoSelected == autoNameTwoHopper)
+			{
+				score_TwoHopper_Autonomous(isAllianceRED);
+			}
+			else
+			{
+				//Default Auto goes here
+				//score_GearPosition2_Autonomous();
+				//score_GearPosition1_Autonomous(isAllianceRED, true);
+				doNothingAutonomous();
+			}
+			updateDashboard();
+			Timer.delay(0.005);				// Wait for a motor update time
+		}
+	}
+
+	/*
+	 * Runs the motors with arcade steering.
 	 */
-	@Override
-	public void teleopPeriodic() {
+	void OperatorControl() {
 		//myRobot.SetSafetyEnabled(true);
-				driveGyro.reset();
-				while (isOperatorControl() && isEnabled())
-				{
-					if(killSwitch()){
-						if(!stoleDriveTrainControl && !stoleDriveTrainControl2){
-							tankDrive();
-							shootFuelControl();
-						}
-					} else 
-						{
-						stopShooter();
-						stopRobotDrive();
-						}
-					controlGearCatcher();
-					controlBallIntake();
-					takeOverDrive();
-					gearPiston();
-					updateDashboard();
+		driveGyro.reset();
+		while (isOperatorControl() && isEnabled())
+		{
+			if(!stoleDriveTrainControl && !stoleDriveTrainControl2)
+				tankDrive();
+			shootFuelControl();
+			controlGearCatcher();
+			controlBallIntake();
+			takeOverDrive();
+			updateDashboard();
 
-					calculateShotSpeedBasedOnDistance();
-					// wait for a motor update time
-		Timer.delay(0.005);}
+			calculateShotSpeedBasedOnDistance();
+			// Wait for a motor update time
+			Timer.delay(0.005);
+			
+		}
 	}
 
-	/**
-	 * This function is called periodically during test mode
+	/*
+	 * Runs during test mode
 	 */
-	@Override
-	public void testPeriodic() {
-	     LiveWindow.run();
-	}
+	void Test() {
 
+	}
 }
