@@ -1,11 +1,11 @@
 package org.usfirst.frc.team4026.robot;
 
 
-import java.lang.*;
 import edu.wpi.first.wpilibj.*;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.Timer;
 
 import com.ctre.CANTalon;
 import com.ctre.CANTalon.TalonControlMode;
@@ -52,7 +52,7 @@ public class Robot extends IterativeRobot {
 	Talon agitatorMotor;
 
 	Joystick mainDriverStick;
-	Joystick driveRightStick;
+	//Joystick driveRightStick;
 	Joystick manipulatorStick;
 
 	AnalogGyro driveGyro;
@@ -83,7 +83,7 @@ public class Robot extends IterativeRobot {
 	double gyroKi; //Integrator term for gyro
 	//const double shootSpeedArray[3] = {1000.0, 3600.0, 4000.0};
 	//const double shootDistanceInchArray[3] = {36.0, 118.0, 160.0};
-	SendableChooser	chooser = new SendableChooser();
+	SendableChooser<String> chooser = new SendableChooser<>();
 	String autoNameDefault = "Default";
 	String autoNameGear1 = "Gear Location 1";
 	String autoNameGear2 = "Gear Location 2";
@@ -92,7 +92,7 @@ public class Robot extends IterativeRobot {
 
 
 
-	void RobotInit() {
+	public void robotInit() {
 		rightDriveMotor = new VictorSP( 0 );
 		leftDriveMotor = new VictorSP(1);
 		shooterWheelFront = new CANTalon( 1 );
@@ -109,7 +109,7 @@ public class Robot extends IterativeRobot {
 		agitatorMotor = new Talon( 2 );
 
 		mainDriverStick = new Joystick( 0 );
-		driveRightStick = new Joystick ( 1 );
+		//driveRightStick = new Joystick ( 1 );
 		manipulatorStick = new Joystick( 1 );
 
 		driveGyro = new AnalogGyro( 0 );
@@ -121,6 +121,11 @@ public class Robot extends IterativeRobot {
 		gearCatcherLimitLeft = new DigitalInput( 1 );
 		gearCatcherLimitRight = new DigitalInput( 0 );
 		rightDriveEncoder = new Encoder(8 , 9, false);
+		
+		autoDriveTimer = new Timer();
+		agitatorTimer = new Timer();
+		genericTimer = new Timer();
+
 		
 		stoleDriveTrainControl = false;
 		stoleDriveTrainControl2 = false;
@@ -171,7 +176,7 @@ public class Robot extends IterativeRobot {
 		shooterWheelBack.setD(0.0);
 		//shooterWheelBack.set(0.0);
 		hanger.set(Value.kReverse);
-		shooterServo.set(1.0);
+		shooterServo.set(0);
 		agitatorServo.set(0.9);
 		driveReverse = true;
 		driveGyro.reset();
@@ -271,8 +276,8 @@ public class Robot extends IterativeRobot {
 	void tankDrive()
 	{
 		//toggleDriveDirection();
-		//double right = smoothJoyStick(driveRightStick.getY());
-		//double left = smoothJoyStick(driveLeftStick.getY());
+		//double right = smoothJoyStick(mainDriverStick.getY());
+		//double left = smoothJoyStick(mainDriverStick.getThrottle());
 		double right = mainDriverStick.getY();
 		double left = mainDriverStick.getThrottle();
 
@@ -1493,7 +1498,7 @@ public class Robot extends IterativeRobot {
 	/*
 	 * Runs the motors with arcade steering.
 	 */
-	void OperatorControl() {
+	public void teleopPeriodic() {
 		//myRobot.SetSafetyEnabled(true);
 		driveGyro.reset();
 		while (isOperatorControl() && isEnabled())
