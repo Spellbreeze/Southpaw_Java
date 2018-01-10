@@ -7,6 +7,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.Timer;
 
+import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
 //import com.ctre.WPI_TalonSRX.TalonControlMode;
@@ -43,6 +44,7 @@ public class Robot extends IterativeRobot {
 	static final double SERVO_DOWN = 1.0; //1.0
 	static final boolean USE_DRIVE_TIMER = false;
 	static final double MAX_BATTERY = 12.3;
+	static final int API_MIGRATION_TIMEOUT = 500;
 	
 	//frc::RobotDrive myRobot { 0, 1 }; // robot drive system
 	VictorSP rightDriveMotor;
@@ -158,8 +160,13 @@ public class Robot extends IterativeRobot {
 		SmartDashboard.putData("Auto Modes", chooser);
 
 		//Configure Shooter Talons
-		shooterWheelFront.setFeedbackDevice(CANTalon.FeedbackDevice.CtreMagEncoder_Relative);
-		shooterWheelFront.configNominalOutputVoltage(+0.0f, -0.0f);
+		//TODO: need to revisit new values instead of autostate
+		shooterWheelFront.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, autoState, autoState);
+		
+		//TODO: split into two functions, need to figure out which is forward and which is reverse
+		shooterWheelFront.configNominalOutputForward(0.0, API_MIGRATION_TIMEOUT);
+		shooterWheelFront.configNominalOutputReverse(0.0, API_MIGRATION_TIMEOUT);
+		
 		shooterWheelFront.configPeakOutputVoltage(+0.0f, -12.0f);  //Modify this to allow for just forward or just backward spin
 		shooterWheelFront.changeControlMode(TalonControlMode.Velocity);
 		shooterWheelFront.talon.setInvert(false);// SetSensorDirection(false);
@@ -171,8 +178,8 @@ public class Robot extends IterativeRobot {
 		shooterWheelFront.config_kD(0, 0.0, 500);
 		//shooterWheelFront.set(0.0);
 
-		shooterWheelBack.setFeedbackDevice(WPI_TalonSRX.FeedbackDevice.CtreMagEncoder_Relative);
-		shooterWheelBack.configNominalOutputVoltage(+0.0f, -0.0f);
+		shooterWheelBack.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative);
+		shooterWheelBack.configNominalOutputReverse(+0.0f, -0.0f);
 		shooterWheelBack.configPeakOutputVoltage(+12.0f, -0.0f); //Modify this to allow for just forward or just backward spin
 		shooterWheelBack.changeControlMode(WPI_TalonSRX.TalonControlMode.Velocity);
 		shooterWheelBack.reverseSensor(false);//SetSensorDirection(false);
