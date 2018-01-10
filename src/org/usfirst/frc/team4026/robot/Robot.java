@@ -7,10 +7,18 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.Timer;
 
-import com.ctre.CANTalon;
-import com.ctre.CANTalon.TalonControlMode;
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
+//import com.ctre.WPI_TalonSRX.TalonControlMode;
 
+/**
+ * In changing the iterations of setI, setF, setP, setD to
+ * config_kI, etc, I added two values to the parameters:
+ * 	0 for slot index
+ * 	500 for timeoutMs
+ * exp:
+ * 	config_kD(0, 0.0, 500)
+ */
 
 /**
  * This is a demo program showing the use of the RobotDrive class.
@@ -39,11 +47,11 @@ public class Robot extends IterativeRobot {
 	//frc::RobotDrive myRobot { 0, 1 }; // robot drive system
 	VictorSP rightDriveMotor;
 	VictorSP leftDriveMotor;
-	CANTalon shooterWheelFront;
-	CANTalon shooterWheelBack;
-	CANTalon ballIntakeRoller1;
-	CANTalon ballIntakeRoller2;
-	CANTalon gearCatcherScrew;
+	WPI_TalonSRX shooterWheelFront;
+	WPI_TalonSRX shooterWheelBack;
+	WPI_TalonSRX ballIntakeRoller1;
+	WPI_TalonSRX ballIntakeRoller2;
+	WPI_TalonSRX gearCatcherScrew;
 	DoubleSolenoid hanger;
 	DoubleSolenoid shifter;
 	Compressor compressorPointer;
@@ -81,7 +89,7 @@ public class Robot extends IterativeRobot {
 	int driveRevState;
 	double avgShooterVelocityError;
 	double gyroKi; //Integrator term for gyro
-	//const double shootSpeedArray[3] = {1000.0, 3600.0, 4000.0};
+	//const double shootVelocityArray[3] = {1000.0, 3600.0, 4000.0};
 	//const double shootDistanceInchArray[3] = {36.0, 118.0, 160.0};
 	SendableChooser<String> chooser = new SendableChooser<>();
 	String autoNameDefault = "Default";
@@ -95,11 +103,11 @@ public class Robot extends IterativeRobot {
 	public void robotInit() {
 		rightDriveMotor = new VictorSP( 0 );
 		leftDriveMotor = new VictorSP(1);
-		shooterWheelFront = new CANTalon( 1 );
-		shooterWheelBack = new CANTalon( 5 );
-		ballIntakeRoller1 = new CANTalon( 2 );
-		ballIntakeRoller2 = new CANTalon( 4 );
-		gearCatcherScrew = new CANTalon( 3 );
+		shooterWheelFront = new WPI_TalonSRX( 1 );
+		shooterWheelBack = new WPI_TalonSRX( 5 );
+		ballIntakeRoller1 = new WPI_TalonSRX( 2 );
+		ballIntakeRoller2 = new WPI_TalonSRX( 4 );
+		gearCatcherScrew = new WPI_TalonSRX( 3 );
 		hanger = new DoubleSolenoid( 5,2 );
 		hanger.set(Value.kReverse);
 		shifter = new DoubleSolenoid( 4,3 );
@@ -153,27 +161,27 @@ public class Robot extends IterativeRobot {
 		shooterWheelFront.setFeedbackDevice(CANTalon.FeedbackDevice.CtreMagEncoder_Relative);
 		shooterWheelFront.configNominalOutputVoltage(+0.0f, -0.0f);
 		shooterWheelFront.configPeakOutputVoltage(+0.0f, -12.0f);  //Modify this to allow for just forward or just backward spin
-		shooterWheelFront.changeControlMode(TalonControlMode.Speed);
-		shooterWheelFront.reverseSensor(false);// SetSensorDirection(false);
+		shooterWheelFront.changeControlMode(TalonControlMode.Velocity);
+		shooterWheelFront.talon.setInvert(false);// SetSensorDirection(false);
 		shooterWheelFront.setAllowableClosedLoopErr(0);
 		shooterWheelFront.setProfile(0);//SelectProfileSlot(0);
-		shooterWheelFront.setF(0.02497); //0.0416
-		shooterWheelFront.setP(0.0);
-		shooterWheelFront.setI(0.0);
-		shooterWheelFront.setD(0.0);
+		shooterWheelFront.config_kF(0, 0.02497, 500); //0.0416
+		shooterWheelFront.config_kP(0, 0.0, 500);
+		shooterWheelFront.config_kI(0, 0.0, 500);
+		shooterWheelFront.config_kD(0, 0.0, 500);
 		//shooterWheelFront.set(0.0);
 
-		shooterWheelBack.setFeedbackDevice(CANTalon.FeedbackDevice.CtreMagEncoder_Relative);
+		shooterWheelBack.setFeedbackDevice(WPI_TalonSRX.FeedbackDevice.CtreMagEncoder_Relative);
 		shooterWheelBack.configNominalOutputVoltage(+0.0f, -0.0f);
 		shooterWheelBack.configPeakOutputVoltage(+12.0f, -0.0f); //Modify this to allow for just forward or just backward spin
-		shooterWheelBack.changeControlMode(CANTalon.TalonControlMode.Speed);
+		shooterWheelBack.changeControlMode(WPI_TalonSRX.TalonControlMode.Velocity);
 		shooterWheelBack.reverseSensor(false);//SetSensorDirection(false);
 		shooterWheelBack.setAllowableClosedLoopErr(0);
 		shooterWheelBack.setProfile(0);//SelectProfileSlot(0);
-		shooterWheelBack.setF(0.02497);
-		shooterWheelBack.setP(0.0);
-		shooterWheelBack.setI(0.0);
-		shooterWheelBack.setD(0.0);
+		shooterWheelBack.config_kF(0, 0.02497, 500);
+		shooterWheelBack.config_kP(0, 0.0, 500);
+		shooterWheelBack.config_kI(0, 0.0, 500);
+		shooterWheelBack.config_kD(0, 0.0, 500);
 		//shooterWheelBack.set(0.0);
 		hanger.set(Value.kReverse);
 		shooterServo.set(0);
@@ -281,7 +289,7 @@ public class Robot extends IterativeRobot {
 		double right = mainDriverStick.getY();
 		double left = mainDriverStick.getThrottle();
 
-		//Cut speed in half
+		//Cut Velocity in half
 		if(mainDriverStick.getRawButton(7))
 		{
 			right /= 2.0;
@@ -323,8 +331,8 @@ public class Robot extends IterativeRobot {
 	}
 
 	/*
-	 * Spin shooter wheels up to speed with door closed.
-	 * Return true when wheels are at speed
+	 * Spin shooter wheels up to Velocity with door closed.
+	 * Return true when wheels are at Velocity
 	 */
 	boolean spinShooterWheels(double frontWheel, double backWheel)
 	{
@@ -334,20 +342,20 @@ public class Robot extends IterativeRobot {
 		if(backWheel < 0.0)
 			backWheel = 0.0;
 
-		shooterWheelFront.setP(0.057);
-		shooterWheelFront.setI(0.0001);
-		shooterWheelFront.setD(1.3); //1.2
+		shooterWheelFront.config_kP(0, 0.057, 500);
+		shooterWheelFront.config_kI(0, 0.0001, 500);
+		shooterWheelFront.config_kD(0, 1.3, 500); //1.2
 
-		shooterWheelBack.setP(0.057);
-		shooterWheelBack.setI(0.0001);
-		shooterWheelBack.setD(1.3);
+		shooterWheelBack.config_kP(0, 0.057, 500);
+		shooterWheelBack.config_kI(0, 0.0001, 500);
+		shooterWheelBack.config_kD(0, 1.3, 500);
 
 		shooterWheelFront.set(-1.0 * frontWheel);
 		shooterWheelBack.set(backWheel);
 
 		avgShooterVelocityError = (shooterWheelFront.getClosedLoopError() + shooterWheelBack.getClosedLoopError()) / 2.0;
 
-		if(avgShooterVelocityError < 200 && (shooterWheelBack.getSpeed() > (backWheel * 0.9))) //500
+		if(avgShooterVelocityError < 200 && (shooterWheelBack.getSelectedSensorVelocity(0) > (backWheel * 0.9))) //500
 			return true;
 
 		return false;
@@ -360,12 +368,12 @@ public class Robot extends IterativeRobot {
 	{
 		shooterServo.set(SERVO_DOWN);
 
-		shooterWheelFront.setP(0.0);
-		shooterWheelFront.setI(0.0);
-		shooterWheelFront.setD(0.0);
-		shooterWheelBack.setP(0.0);
-		shooterWheelBack.setI(0.0);
-		shooterWheelBack.setD(0.0);
+		shooterWheelFront.config_kP(0, 0.0, 500);
+		shooterWheelFront.config_kI(0, 0.0, 500);
+		shooterWheelFront.config_kD(0, 0.0, 500);
+		shooterWheelBack.config_kP(0, 0.0, 500);
+		shooterWheelBack.config_kI(0, 0.0, 500);
+		shooterWheelBack.config_kD(0, 0.0, 500);
 
 		shooterWheelFront.set(0.0);
 		shooterWheelBack.set(0.0);
@@ -379,7 +387,7 @@ public class Robot extends IterativeRobot {
 	void shootFuel(boolean useDistanceSensor, double frontVel, double backVel)
 	{
 		if(useDistanceSensor)
-		{	//double shootRPM = calculateShotSpeedBasedOnDistance();
+		{	//double shootRPM = calculateShotVelocityBasedOnDistance();
 
 			if(frontVel != 0.0) //0.0 indicated error
 			{
@@ -416,7 +424,7 @@ public class Robot extends IterativeRobot {
 	}
 
 	/*
-	 * Simple manual shooter control.  A more complex shooting scheme will be needed to step through opening the door and Waiting until the shooter is at speed.
+	 * Simple manual shooter control.  A more complex shooting scheme will be needed to step through opening the door and Waiting until the shooter is at Velocity.
 	 */
 	void shootFuelControl()
 	{
@@ -455,7 +463,7 @@ public class Robot extends IterativeRobot {
 						stopRobotDrive();
 
 						angleBoilerFoundDeg = driveGyro.getAngle();
-						sVel = calculateShotSpeedBasedOnDistance();
+						sVel = calculateShotVelocityBasedOnDistance();
 
 						agitatorUp = false;
 						agitatorTimer.reset();
@@ -471,7 +479,7 @@ public class Robot extends IterativeRobot {
 					{
 						if(manipulatorStick.getRawButton(2))
 						{
-							shootFuel(false, 3200.0, 3200.0); //Use the distance sensor to adjust shot speed set to true
+							shootFuel(false, 3200.0, 3200.0); //Use the distance sensor to adjust shot Velocity set to true
 						}
 						else
 						{
@@ -515,7 +523,7 @@ public class Robot extends IterativeRobot {
 	 */
 	void controlGearCatcher()
 	{
-		//Should set a dead-zone for this despite the speed controllers having one built in
+		//Should set a dead-zone for this despite the Velocity controllers having one built in
 		//gearCatcherScrew.set(manipulatorStick.getX());
 		if(manipulatorStick.getRawButton(3))
 		{
@@ -616,11 +624,11 @@ public class Robot extends IterativeRobot {
 	/*
 	 * Used during autonomous to turn the robot to a specified angle.
 	 */
-	boolean turnGyro(double rAngle, double maxTurnSpeed)
+	boolean turnGyro(double rAngle, double maxTurnVelocity)
 	{	 ;
 		
 		double error = 0.0;
-		double speedToSet = 0.0;
+		double VelocityToSet = 0.0;
 		//Positive gyro angle means turning left
 		if(rAngle < driveGyro.getAngle())
 		{
@@ -636,11 +644,11 @@ public class Robot extends IterativeRobot {
 			if(driveGyro.getAngle() <= Math.abs(rAngle) && Math.abs(error) > 2.0)
 			{
 				//turn left
-				speedToSet = (error/270) + 0.2 + gyroKi; //140 0.2
-				if(Math.abs(speedToSet) > maxTurnSpeed)
-					speedToSet = maxTurnSpeed * (speedToSet < 0.0 ? -1.0 : 1.0);
-				leftDriveMotor.set(speedToSet * batteryCompensationPct()); //0.8
-				rightDriveMotor.set(speedToSet * batteryCompensationPct()); //0.8
+				VelocityToSet = (error/270) + 0.2 + gyroKi; //140 0.2
+				if(Math.abs(VelocityToSet) > maxTurnVelocity)
+					VelocityToSet = maxTurnVelocity * (VelocityToSet < 0.0 ? -1.0 : 1.0);
+				leftDriveMotor.set(VelocityToSet * batteryCompensationPct()); //0.8
+				rightDriveMotor.set(VelocityToSet * batteryCompensationPct()); //0.8
 			}
 			else
 			{
@@ -664,11 +672,11 @@ public class Robot extends IterativeRobot {
 			if(driveGyro.getAngle() >= -rAngle && Math.abs(error) > 2.0)
 			{
 				//turn right
-				speedToSet = (error/270) - 0.2 - gyroKi;
-				if(Math.abs(speedToSet) > maxTurnSpeed)
-					speedToSet = maxTurnSpeed * (speedToSet < 0.0 ? -1.0 : 1.0);
-				leftDriveMotor.set(speedToSet * batteryCompensationPct()); //-0.8
-				rightDriveMotor.set(speedToSet * batteryCompensationPct()); //-0.8
+				VelocityToSet = (error/270) - 0.2 - gyroKi;
+				if(Math.abs(VelocityToSet) > maxTurnVelocity)
+					VelocityToSet = maxTurnVelocity * (VelocityToSet < 0.0 ? -1.0 : 1.0);
+				leftDriveMotor.set(VelocityToSet * batteryCompensationPct()); //-0.8
+				rightDriveMotor.set(VelocityToSet * batteryCompensationPct()); //-0.8
 			}
 			else
 			{
@@ -748,9 +756,9 @@ public class Robot extends IterativeRobot {
 	}
 
 	/*
-	 * Calculate the shooter speed based on ultrasonic measured distance
+	 * Calculate the shooter Velocity based on ultrasonic measured distance
 	 */
-	double calculateShotSpeedBasedOnDistance()
+	double calculateShotVelocityBasedOnDistance()
 	{
 		double currentShooterDistanceInch = CalculateWallDistanceShooter(false) + 17.5;
 
@@ -763,7 +771,7 @@ public class Robot extends IterativeRobot {
 		shooterVelocity = Math.sqrt(((currentShooterDistanceInch * 2.0) * GRAVITY_IN_S2) / Math.sin(2.0 * SHOOTER_ANGLE_DEGREES * PI / 180.0));
 		shooterCalculatedRPM = (shooterVelocity * 60.0)/ (SHOOTER_WHEEL_DIAMETER_INCH * PI) * (SHOOTER_PCT_EFFICIENCY / 100.0);
 
-		SmartDashboard.putNumber("Calculated Shot Speed (RPM): ", shooterCalculatedRPM);
+		SmartDashboard.putNumber("Calculated Shot Velocity (RPM): ", shooterCalculatedRPM);
 
 		return shooterCalculatedRPM;
 	}
@@ -850,7 +858,7 @@ public class Robot extends IterativeRobot {
 	void updateDashboard()
 	{
 		//SmartDashboard::PutNumber("Wall Distance Right: ", CalculateWallDistanceR(false));
-		SmartDashboard.putNumber("Wall Distance Right: ", shooterWheelBack.getSpeed());
+		SmartDashboard.putNumber("Wall Distance Right: ", shooterWheelBack.getSelectedSensorVelocity(0));
 		SmartDashboard.putNumber("Wall Distance Left: ", CalculateWallDistanceL(false));
 		SmartDashboard.putNumber("Wall Distance Shooter: ", CalculateWallDistanceShooter(false));
 		SmartDashboard.putNumber("Gyro Reading: ", driveGyro.getAngle());
@@ -957,7 +965,7 @@ public class Robot extends IterativeRobot {
 	/*
 	 * get both middle and close hopper of balls (RED)
 	 * I've assumed that negative angles will turn clockwise relative to the gear catcher being the front
-	 * I've assume positive drive motor speeds will drive the robot in reverse (relative to the gear catcher being the front)
+	 * I've assume positive drive motor Velocitys will drive the robot in reverse (relative to the gear catcher being the front)
 	 */
 	void score_TwoHopper_Autonomous(boolean isRED)
 	{
@@ -1070,7 +1078,7 @@ public class Robot extends IterativeRobot {
 				{
 					stopRobotDrive();
 
-					//sVel = calculateShotSpeedBasedOnDistance();
+					//sVel = calculateShotVelocityBasedOnDistance();
 
 					//agitatorUp = false;
 					//agitatorTimer.reset();
@@ -1088,7 +1096,7 @@ public class Robot extends IterativeRobot {
 
 					stopRobotDrive();
 
-					sVel = calculateShotSpeedBasedOnDistance();
+					sVel = calculateShotVelocityBasedOnDistance();
 
 					agitatorUp = false;
 					agitatorTimer.reset();
@@ -1148,7 +1156,7 @@ public class Robot extends IterativeRobot {
 	/*
 	 * Score gear on peg RED (Gear position 1 is closest to the boiler)
 	 * I've assumed that negative angles will turn clockwise relative to the gear catcher being the front
-	 * I've assume positive drive motor speeds will drive the robot in reverse (relative to the gear catcher being the front)
+	 * I've assume positive drive motor Velocitys will drive the robot in reverse (relative to the gear catcher being the front)
 	 */
 	void score_GearPosition1_Autonomous(boolean isRED, boolean shootFuelAfterGear)
 	{
@@ -1285,7 +1293,7 @@ public class Robot extends IterativeRobot {
 				if(!photoElectricShooter.get())
 				{
 					stopRobotDrive();
-					sVel = calculateShotSpeedBasedOnDistance();
+					sVel = calculateShotVelocityBasedOnDistance();
 
 					agitatorUp = false;
 					agitatorTimer.reset();
@@ -1312,7 +1320,7 @@ public class Robot extends IterativeRobot {
 	/*
 	 * Score gear on peg RED (Gear position 2 is middle peg)
 	 * I've assumed that negative angles will turn clockwise relative to the gear catcher being the front
-	 * I've assume positive drive motor speeds will drive the robot in reverse (relative to the gear catcher being the front)
+	 * I've assume positive drive motor Velocitys will drive the robot in reverse (relative to the gear catcher being the front)
 	 */
 	void score_GearPosition2_Autonomous(boolean isRED, boolean useUltra)
 	{
@@ -1403,7 +1411,7 @@ public class Robot extends IterativeRobot {
 
 					stopRobotDrive();
 
-					sVel = calculateShotSpeedBasedOnDistance();
+					sVel = calculateShotVelocityBasedOnDistance();
 
 					agitatorUp = false;
 					agitatorTimer.reset();
@@ -1511,7 +1519,7 @@ public class Robot extends IterativeRobot {
 			takeOverDrive();
 			updateDashboard();
 
-			calculateShotSpeedBasedOnDistance();
+			calculateShotVelocityBasedOnDistance();
 			// Wait for a motor update time
 			Timer.delay(0.005);
 			
