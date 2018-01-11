@@ -7,6 +7,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.Timer;
 
+import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
@@ -44,7 +45,11 @@ public class Robot extends IterativeRobot {
 	static final double SERVO_DOWN = 1.0; //1.0
 	static final boolean USE_DRIVE_TIMER = false;
 	static final double MAX_BATTERY = 12.3;
+	
+	//TODO: assign the right values for each instance of these
 	static final int API_MIGRATION_TIMEOUT = 500;
+	static final double API_MIGRATION_DOUBLE = 0.0;
+	static final int API_MIGRATION_INDEX_SLOT = 0;
 	
 	//frc::RobotDrive myRobot { 0, 1 }; // robot drive system
 	VictorSP rightDriveMotor;
@@ -166,29 +171,42 @@ public class Robot extends IterativeRobot {
 		//TODO: split into two functions, need to figure out which is forward and which is reverse
 		shooterWheelFront.configNominalOutputForward(0.0, API_MIGRATION_TIMEOUT);
 		shooterWheelFront.configNominalOutputReverse(0.0, API_MIGRATION_TIMEOUT);
+		//TODO: split into two functions, need figure out which is forward/reverse
+		shooterWheelFront.configPeakOutputForward(0.0, API_MIGRATION_TIMEOUT);  //Modify this to allow for just forward or just backward spin
+		shooterWheelFront.configPeakOutputReverse(1.0, API_MIGRATION_TIMEOUT);
 		
-		shooterWheelFront.configPeakOutputVoltage(+0.0f, -12.0f);  //Modify this to allow for just forward or just backward spin
-		shooterWheelFront.changeControlMode(TalonControlMode.Velocity);
-		shooterWheelFront.talon.setInvert(false);// SetSensorDirection(false);
-		shooterWheelFront.setAllowableClosedLoopErr(0);
+		//TODO: updated changeControlMode() to set(), fix double
+		shooterWheelFront.set(ControlMode.Velocity, API_MIGRATION_DOUBLE);
+		shooterWheelFront.WPI_TalonSRX.setInvert(false);// SetSensorDirection(false);
+		//TODO: fix these parameters for configAllowableClosedloopError
+		shooterWheelFront.configAllowableClosedloopError(API_MIGRATION_INDEX_SLOT, 0, API_MIGRATION_TIMEOUT);
 		shooterWheelFront.setProfile(0);//SelectProfileSlot(0);
-		shooterWheelFront.config_kF(0, 0.02497, 500); //0.0416
-		shooterWheelFront.config_kP(0, 0.0, 500);
-		shooterWheelFront.config_kI(0, 0.0, 500);
-		shooterWheelFront.config_kD(0, 0.0, 500);
+		shooterWheelFront.config_kF(0, 0.02497, API_MIGRATION_TIMEOUT); //0.0416
+		shooterWheelFront.config_kP(0, 0.0, API_MIGRATION_TIMEOUT);
+		shooterWheelFront.config_kI(0, 0.0, API_MIGRATION_TIMEOUT);
+		shooterWheelFront.config_kD(0, 0.0, API_MIGRATION_TIMEOUT);
 		//shooterWheelFront.set(0.0);
-
-		shooterWheelBack.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative);
-		shooterWheelBack.configNominalOutputReverse(+0.0f, -0.0f);
-		shooterWheelBack.configPeakOutputVoltage(+12.0f, -0.0f); //Modify this to allow for just forward or just backward spin
-		shooterWheelBack.changeControlMode(WPI_TalonSRX.TalonControlMode.Velocity);
+		
+		//TODO: revise new values from autostate
+		shooterWheelBack.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, autoState, autoState);
+		
+		//TODO: split into two functions, figure out forward and reverse
+		shooterWheelBack.configNominalOutputForward(0.0, API_MIGRATION_TIMEOUT);
+		shooterWheelBack.configNominalOutputReverse(0.0, API_MIGRATION_TIMEOUT);
+		//TODO: split into two functions, figure out forward and reverse
+		shooterWheelBack.configPeakOutputForward(1.0, API_MIGRATION_TIMEOUT);
+		shooterWheelBack.configPeakOutputReverse(0.0, API_MIGRATION_TIMEOUT); //Modify this to allow for just forward or just backward spin
+		
+		//TODO: updated changeControlMode() to set(), fix double
+		shooterWheelBack.set(ControlMode.Velocity, API_MIGRATION_DOUBLE);
 		shooterWheelBack.reverseSensor(false);//SetSensorDirection(false);
-		shooterWheelBack.setAllowableClosedLoopErr(0);
+		//TODO: fix these parameters for configAllowableClosedloopError
+		shooterWheelBack.configAllowableClosedloopError(API_MIGRATION_INDEX_SLOT, 0, API_MIGRATION_TIMEOUT);
 		shooterWheelBack.setProfile(0);//SelectProfileSlot(0);
-		shooterWheelBack.config_kF(0, 0.02497, 500);
-		shooterWheelBack.config_kP(0, 0.0, 500);
-		shooterWheelBack.config_kI(0, 0.0, 500);
-		shooterWheelBack.config_kD(0, 0.0, 500);
+		shooterWheelBack.config_kF(0, 0.02497, API_MIGRATION_TIMEOUT);
+		shooterWheelBack.config_kP(0, 0.0, API_MIGRATION_TIMEOUT);
+		shooterWheelBack.config_kI(0, 0.0, API_MIGRATION_TIMEOUT);
+		shooterWheelBack.config_kD(0, 0.0, API_MIGRATION_TIMEOUT);
 		//shooterWheelBack.set(0.0);
 		hanger.set(Value.kReverse);
 		shooterServo.set(0);
