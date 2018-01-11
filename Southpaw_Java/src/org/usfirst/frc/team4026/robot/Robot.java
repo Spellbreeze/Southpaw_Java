@@ -6,10 +6,12 @@ import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.hal.PowerJNI;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
+
 
 //import com.ctre.WPI_TalonSRX.TalonControlMode;
 
@@ -177,10 +179,12 @@ public class Robot extends IterativeRobot {
 		
 		//TODO: updated changeControlMode() to set(), fix double
 		shooterWheelFront.set(ControlMode.Velocity, API_MIGRATION_DOUBLE);
-		shooterWheelFront.WPI_TalonSRX.setInvert(false);// SetSensorDirection(false);
+		//TODO: changed from setInvert to setSensorPhase
+		shooterWheelFront.setSensorPhase(false);// SetSensorDirection(false);
 		//TODO: fix these parameters for configAllowableClosedloopError
 		shooterWheelFront.configAllowableClosedloopError(API_MIGRATION_INDEX_SLOT, 0, API_MIGRATION_TIMEOUT);
-		shooterWheelFront.setProfile(0);//SelectProfileSlot(0);
+		//TODO: fix slotIdx and pidIdx placeholders
+		shooterWheelFront.selectProfileSlot(0, autoState);//SelectProfileSlot(0);
 		shooterWheelFront.config_kF(0, 0.02497, API_MIGRATION_TIMEOUT); //0.0416
 		shooterWheelFront.config_kP(0, 0.0, API_MIGRATION_TIMEOUT);
 		shooterWheelFront.config_kI(0, 0.0, API_MIGRATION_TIMEOUT);
@@ -199,10 +203,12 @@ public class Robot extends IterativeRobot {
 		
 		//TODO: updated changeControlMode() to set(), fix double
 		shooterWheelBack.set(ControlMode.Velocity, API_MIGRATION_DOUBLE);
-		shooterWheelBack.reverseSensor(false);//SetSensorDirection(false);
+		//TODO: double-check proper boolean parameter for setSensorphase (changed from reverseSensor)
+		shooterWheelBack.setSensorPhase(false);//SetSensorDirection(false);
 		//TODO: fix these parameters for configAllowableClosedloopError
 		shooterWheelBack.configAllowableClosedloopError(API_MIGRATION_INDEX_SLOT, 0, API_MIGRATION_TIMEOUT);
-		shooterWheelBack.setProfile(0);//SelectProfileSlot(0);
+		//TODO: fix slotIdx and pidIdx placeholders
+		shooterWheelFront.selectProfileSlot(0, autoState);//SelectProfileSlot(0);
 		shooterWheelBack.config_kF(0, 0.02497, API_MIGRATION_TIMEOUT);
 		shooterWheelBack.config_kP(0, 0.0, API_MIGRATION_TIMEOUT);
 		shooterWheelBack.config_kI(0, 0.0, API_MIGRATION_TIMEOUT);
@@ -377,8 +383,9 @@ public class Robot extends IterativeRobot {
 
 		shooterWheelFront.set(-1.0 * frontWheel);
 		shooterWheelBack.set(backWheel);
-
-		avgShooterVelocityError = (shooterWheelFront.getClosedLoopError() + shooterWheelBack.getClosedLoopError()) / 2.0;
+		
+		//TODO: replace the autoState placeholders with the actual pidIdx
+		avgShooterVelocityError = (shooterWheelFront.getClosedLoopError(autoState) + shooterWheelBack.getClosedLoopError(autoState)) / 2.0;
 
 		if(avgShooterVelocityError < 200 && (shooterWheelBack.getSelectedSensorVelocity(0) > (backWheel * 0.9))) //500
 			return true;
@@ -872,7 +879,9 @@ public class Robot extends IterativeRobot {
 	double batteryCompensationPct()
 	{
 		double batteryScaleFactor = 0.0;
-		batteryScaleFactor = MAX_BATTERY / DriverStation.getInstance().getBatteryVoltage();
+
+		// RobotController.getInstance().getBatteryVoltage issue https://www.chiefdelphi.com/forums/showthread.php?p=1717817
+		batteryScaleFactor = MAX_BATTERY / PowerJNI.getVinVoltage();
 
 		return batteryScaleFactor;
 	}
