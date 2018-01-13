@@ -168,7 +168,7 @@ public class Robot extends IterativeRobot {
 
 		//Configure Shooter Talons
 		//TODO: need to revisit new pidIdx values instead of autostate
-		shooterWheelFront.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, autoState, API_MIGRATION_TIMEOUT);
+		shooterWheelFront.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, 0, API_MIGRATION_TIMEOUT);
 		
 		//TODO: split into two functions, need to figure out which is forward and which is reverse
 		shooterWheelFront.configNominalOutputForward(0.0, API_MIGRATION_TIMEOUT);
@@ -384,8 +384,7 @@ public class Robot extends IterativeRobot {
 		shooterWheelFront.set(-1.0 * frontWheel);
 		shooterWheelBack.set(backWheel);
 		
-		//TODO: replace the autoState placeholders with the actual pidIdx
-		avgShooterVelocityError = (shooterWheelFront.getClosedLoopError(autoState) + shooterWheelBack.getClosedLoopError(autoState)) / 2.0;
+		avgShooterVelocityError = (shooterWheelFront.getClosedLoopError(0) + shooterWheelBack.getClosedLoopError(0)) / 2.0;
 
 		if(avgShooterVelocityError < 200 && (shooterWheelBack.getSelectedSensorVelocity(0) > (backWheel * 0.9))) //500
 			return true;
