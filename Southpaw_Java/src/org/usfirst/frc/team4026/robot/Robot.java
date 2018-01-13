@@ -49,7 +49,7 @@ public class Robot extends IterativeRobot {
 	static final double MAX_BATTERY = 12.3;
 	
 	//TODO: assign the right values for each instance of these
-	static final int API_MIGRATION_TIMEOUT = 500;
+	static final int API_MIGRATION_TIMEOUT = 0;
 	static final double API_MIGRATION_DOUBLE = 0.0;
 	static final int API_MIGRATION_INDEX_SLOT = 0;
 	
@@ -167,8 +167,8 @@ public class Robot extends IterativeRobot {
 		SmartDashboard.putData("Auto Modes", chooser);
 
 		//Configure Shooter Talons
-		//TODO: need to revisit new values instead of autostate
-		shooterWheelFront.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, autoState, autoState);
+		//TODO: need to revisit new pidIdx values instead of autostate
+		shooterWheelFront.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, autoState, API_MIGRATION_TIMEOUT);
 		
 		//TODO: split into two functions, need to figure out which is forward and which is reverse
 		shooterWheelFront.configNominalOutputForward(0.0, API_MIGRATION_TIMEOUT);
@@ -184,7 +184,7 @@ public class Robot extends IterativeRobot {
 		//TODO: fix these parameters for configAllowableClosedloopError
 		shooterWheelFront.configAllowableClosedloopError(API_MIGRATION_INDEX_SLOT, 0, API_MIGRATION_TIMEOUT);
 		//TODO: fix slotIdx and pidIdx placeholders
-		shooterWheelFront.selectProfileSlot(0, autoState);//SelectProfileSlot(0);
+		shooterWheelFront.selectProfileSlot(0, 0);//SelectProfileSlot(0);
 		shooterWheelFront.config_kF(0, 0.02497, API_MIGRATION_TIMEOUT); //0.0416
 		shooterWheelFront.config_kP(0, 0.0, API_MIGRATION_TIMEOUT);
 		shooterWheelFront.config_kI(0, 0.0, API_MIGRATION_TIMEOUT);
@@ -205,10 +205,10 @@ public class Robot extends IterativeRobot {
 		shooterWheelBack.set(ControlMode.Velocity, API_MIGRATION_DOUBLE);
 		//TODO: double-check proper boolean parameter for setSensorphase (changed from reverseSensor)
 		shooterWheelBack.setSensorPhase(false);//SetSensorDirection(false);
-		//TODO: fix these parameters for configAllowableClosedloopError
+		//TODO: fix these slotIdx for this
 		shooterWheelBack.configAllowableClosedloopError(API_MIGRATION_INDEX_SLOT, 0, API_MIGRATION_TIMEOUT);
-		//TODO: fix slotIdx and pidIdx placeholders
-		shooterWheelFront.selectProfileSlot(0, autoState);//SelectProfileSlot(0);
+		//TODO: check for proper slotIdx and pidIdx
+		shooterWheelFront.selectProfileSlot(0, 0);//SelectProfileSlot(0);
 		shooterWheelBack.config_kF(0, 0.02497, API_MIGRATION_TIMEOUT);
 		shooterWheelBack.config_kP(0, 0.0, API_MIGRATION_TIMEOUT);
 		shooterWheelBack.config_kI(0, 0.0, API_MIGRATION_TIMEOUT);
