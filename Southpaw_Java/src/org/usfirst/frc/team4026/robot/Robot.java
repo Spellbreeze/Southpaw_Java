@@ -182,13 +182,13 @@ public class Robot extends IterativeRobot {
 		//TODO: changed from setInvert to setSensorPhase
 		shooterWheelFront.setSensorPhase(false);// SetSensorDirection(false);
 		//TODO: fix these parameters for configAllowableClosedloopError
-		shooterWheelFront.configAllowableClosedloopError(API_MIGRATION_INDEX_SLOT, 0, API_MIGRATION_TIMEOUT);
+		shooterWheelFront.configAllowableClosedloopError(1, 0, API_MIGRATION_TIMEOUT);
 		//TODO: fix slotIdx and pidIdx placeholders
-		shooterWheelFront.selectProfileSlot(0, 0);//SelectProfileSlot(0);
-		shooterWheelFront.config_kF(0, 0.02497, API_MIGRATION_TIMEOUT); //0.0416
-		shooterWheelFront.config_kP(0, 0.0, API_MIGRATION_TIMEOUT);
-		shooterWheelFront.config_kI(0, 0.0, API_MIGRATION_TIMEOUT);
-		shooterWheelFront.config_kD(0, 0.0, API_MIGRATION_TIMEOUT);
+		shooterWheelFront.selectProfileSlot(1, 0);//SelectProfileSlot(0);
+		shooterWheelFront.config_kF(1, 0.02497, API_MIGRATION_TIMEOUT); //0.0416
+		shooterWheelFront.config_kP(1, 0.0, API_MIGRATION_TIMEOUT);
+		shooterWheelFront.config_kI(1, 0.0, API_MIGRATION_TIMEOUT);
+		shooterWheelFront.config_kD(1, 0.0, API_MIGRATION_TIMEOUT);
 		//shooterWheelFront.set(0.0);
 		
 		//TODO: revise new values from autostate
@@ -206,13 +206,13 @@ public class Robot extends IterativeRobot {
 		//TODO: double-check proper boolean parameter for setSensorphase (changed from reverseSensor)
 		shooterWheelBack.setSensorPhase(false);//SetSensorDirection(false);
 		//TODO: fix these slotIdx for this
-		shooterWheelBack.configAllowableClosedloopError(API_MIGRATION_INDEX_SLOT, 0, API_MIGRATION_TIMEOUT);
-		//TODO: check for proper slotIdx and pidIdx
-		shooterWheelFront.selectProfileSlot(0, 0);//SelectProfileSlot(0);
-		shooterWheelBack.config_kF(0, 0.02497, API_MIGRATION_TIMEOUT);
-		shooterWheelBack.config_kP(0, 0.0, API_MIGRATION_TIMEOUT);
-		shooterWheelBack.config_kI(0, 0.0, API_MIGRATION_TIMEOUT);
-		shooterWheelBack.config_kD(0, 0.0, API_MIGRATION_TIMEOUT);
+		shooterWheelBack.configAllowableClosedloopError(5, 0, API_MIGRATION_TIMEOUT);
+		//TODO: check for proper slotIdx and pidIdx, 211 was shooterWheelFront
+		shooterWheelBack.selectProfileSlot(5, 0);//SelectProfileSlot(0);
+		shooterWheelBack.config_kF(5, 0.02497, API_MIGRATION_TIMEOUT);
+		shooterWheelBack.config_kP(5, 0.0, API_MIGRATION_TIMEOUT);
+		shooterWheelBack.config_kI(5, 0.0, API_MIGRATION_TIMEOUT);
+		shooterWheelBack.config_kD(5, 0.0, API_MIGRATION_TIMEOUT);
 		//shooterWheelBack.set(0.0);
 		hanger.set(Value.kReverse);
 		shooterServo.set(0);
