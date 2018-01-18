@@ -192,7 +192,7 @@ public class Robot extends IterativeRobot {
 		//shooterWheelFront.set(0.0);
 		
 		//TODO: revise new values from autostate
-		shooterWheelBack.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, autoState, autoState);
+		shooterWheelBack.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, 0, API_MIGRATION_TIMEOUT);
 		
 		//TODO: split into two functions, figure out forward and reverse
 		shooterWheelBack.configNominalOutputForward(0.0, API_MIGRATION_TIMEOUT);
