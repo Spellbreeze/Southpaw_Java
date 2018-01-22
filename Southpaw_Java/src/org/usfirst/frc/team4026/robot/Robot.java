@@ -48,7 +48,6 @@ public class Robot extends IterativeRobot {
 	static final boolean USE_DRIVE_TIMER = false;
 	static final double MAX_BATTERY = 12.3;
 	
-	//TODO: assign the right values for each instance of these
 	static final int API_MIGRATION_TIMEOUT = 0;
 	static final double API_MIGRATION_DOUBLE = 0.0;
 	static final int API_MIGRATION_INDEX_SLOT = 0;
@@ -399,12 +398,12 @@ public class Robot extends IterativeRobot {
 	{
 		shooterServo.set(SERVO_DOWN);
 
-		shooterWheelFront.config_kP(0, 0.0, 500);
-		shooterWheelFront.config_kI(0, 0.0, 500);
-		shooterWheelFront.config_kD(0, 0.0, 500);
-		shooterWheelBack.config_kP(0, 0.0, 500);
-		shooterWheelBack.config_kI(0, 0.0, 500);
-		shooterWheelBack.config_kD(0, 0.0, 500);
+		shooterWheelFront.config_kP(0, 0.0, API_MIGRATION_TIMEOUT);
+		shooterWheelFront.config_kI(0, 0.0, API_MIGRATION_TIMEOUT);
+		shooterWheelFront.config_kD(0, 0.0, API_MIGRATION_TIMEOUT);
+		shooterWheelBack.config_kP(0, 0.0, API_MIGRATION_TIMEOUT);
+		shooterWheelBack.config_kI(0, 0.0, API_MIGRATION_TIMEOUT);
+		shooterWheelBack.config_kD(0, 0.0, API_MIGRATION_TIMEOUT);
 
 		shooterWheelFront.set(0.0);
 		shooterWheelBack.set(0.0);
@@ -415,6 +414,8 @@ public class Robot extends IterativeRobot {
 	/*
 	 * Perform task of shooting fuel
 	 */
+	
+	//TODO: I think the error stopping the bot from shooting is here.
 	void shootFuel(boolean useDistanceSensor, double frontVel, double backVel)
 	{
 		if(useDistanceSensor)
@@ -459,7 +460,7 @@ public class Robot extends IterativeRobot {
 	 */
 	void shootFuelControl()
 	{
-		double angleBoilerFoundDeg = 0.0;
+		//double angleBoilerFoundDeg = 0.0;
 		double sVel = 0.0;
 
 		if(manipulatorStick.getY() > 0.1 || manipulatorStick.getY() < -0.1)
