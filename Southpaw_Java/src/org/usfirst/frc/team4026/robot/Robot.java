@@ -373,13 +373,13 @@ public class Robot extends IterativeRobot {
 		if(backWheel < 0.0)
 			backWheel = 0.0;
 
-		shooterWheelFront.config_kP(0, 0.057, 500);
-		shooterWheelFront.config_kI(0, 0.0001, 500);
-		shooterWheelFront.config_kD(0, 1.3, 500); //1.2
+		shooterWheelFront.config_kP(0, 0.057, API_MIGRATION_TIMEOUT);
+		shooterWheelFront.config_kI(0, 0.0001, API_MIGRATION_TIMEOUT);
+		shooterWheelFront.config_kD(0, 1.3, API_MIGRATION_TIMEOUT); //1.2
 
-		shooterWheelBack.config_kP(0, 0.057, 500);
-		shooterWheelBack.config_kI(0, 0.0001, 500);
-		shooterWheelBack.config_kD(0, 1.3, 500);
+		shooterWheelBack.config_kP(0, 0.057, API_MIGRATION_TIMEOUT);
+		shooterWheelBack.config_kI(0, 0.0001, API_MIGRATION_TIMEOUT);
+		shooterWheelBack.config_kD(0, 1.3, API_MIGRATION_TIMEOUT);
 
 		shooterWheelFront.set(-1.0 * frontWheel);
 		shooterWheelBack.set(backWheel);
@@ -506,7 +506,7 @@ public class Robot extends IterativeRobot {
 
 				case 2:
 					//Attempt to keep the robot pointing in the correct direction
-					if(!photoElectricShooter.get() && turnGyro(angleBoilerFoundDeg, 0.3))
+					if(!photoElectricShooter.get()) //&& turnGyro(angleBoilerFoundDeg, 0.3)
 					{
 						if(manipulatorStick.getRawButton(2))
 						{
