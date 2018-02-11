@@ -460,7 +460,7 @@ public class Robot extends IterativeRobot {
 	 */
 	void shootFuelControl()
 	{
-		//double angleBoilerFoundDeg = 0.0;
+		double angleBoilerFoundDeg = 0.0;
 		double sVel = 0.0;
 
 		if(manipulatorStick.getY() > 0.1 || manipulatorStick.getY() < -0.1)
@@ -472,7 +472,7 @@ public class Robot extends IterativeRobot {
 				shooterServo.set(SERVO_DOWN);
 			 */
 		}
-		else if(manipulatorStick.getRawButton(1) || manipulatorStick.getRawButton(2))
+		else if(manipulatorStick.getRawButton(1))
 		{
 			stoleDriveTrainControl = true;
 			switch(shootFuelState)
