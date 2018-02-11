@@ -1,0 +1,26 @@
+
+e
+squid:S106J"9Replace this use of System.out or System.err by a logger.(®ú²¬H†.RMAJORZ
+CODE_SMELL
+d
+squid:S106<"9Replace this use of System.out or System.err by a logger.(Û¡”3H‡.RMAJORZ
+CODE_SMELL
+‡squid:S00116"TRename this field "notifier_" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(±°¹ëÿÿÿÿÿHˆ.RMINORZ
+CODE_SMELL
+‡squid:S00116"TRename this field "runnable_" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(îé‚ÜûÿÿÿÿH‰.RMINORZ
+CODE_SMELL
+‰squid:S00116"[Rename this field "taskRunningLock_" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(‡—ßëHŠ.RMINORZ
+CODE_SMELL
+Ssquid:S1170"!Make this final field static too.(¦ãˆÞýÿÿÿÿH‹.RMINORZ
+CODE_SMELL
+squid:S00116"SRename this field "running_" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(Áº¤½HŒ.RMINORZ
+CODE_SMELL
+e
+squid:S106P"9Replace this use of System.out or System.err by a logger.(ü¿˜”H.RMAJORZ
+CODE_SMELL
+„squid:S00116"QRename this field "loops_" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(…üƒØúÿÿÿÿHŽ.RMINORZ
+CODE_SMELL
+ˆsquid:S00116"URename this field "timestamp_" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(žÑý²þÿÿÿÿH.RMINORZ
+CODE_SMELL
+squid:S00116"NRename this field "dt_" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(ë‡™ÿÿÿÿÿH.RMINORZ
+CODE_SMELL

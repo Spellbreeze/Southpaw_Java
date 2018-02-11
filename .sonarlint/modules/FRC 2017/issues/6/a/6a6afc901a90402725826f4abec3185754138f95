@@ -1,0 +1,8 @@
+
+‰squid:S00116	"VRename this field "m_auto_mode" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(áÆØÁúÿÿÿÿH”.RMINORZ
+CODE_SMELL
+†squid:S00116
+"SRename this field "m_thread" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(½æşşÿÿÿÿÿH•.RMINORZ
+CODE_SMELL
+„squid:S00117"QRename this local variable to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(‰¢üÿÿÿÿH–.RMINORZ
+CODE_SMELL

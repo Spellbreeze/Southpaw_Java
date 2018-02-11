@@ -1,0 +1,115 @@
+
+~squid:CommentedOutCodeLineì"<This block of commented-out lines of code should be removed.(ÒÌâ–øÿÿÿÿHRMAJORZ
+CODE_SMELL
+~squid:CommentedOutCodeLine˜"<This block of commented-out lines of code should be removed.(ÒÌâ–øÿÿÿÿHRMAJORZ
+CODE_SMELL
+Nsquid:S1170"!Make this final field static too.(É¶£žH‘RMINORZ
+CODE_SMELL
+~squid:CommentedOutCodeLine‚"<This block of commented-out lines of code should be removed.(ÒÌâ–øÿÿÿÿH’RMAJORZ
+CODE_SMELL
+_squid:S1135˜"2Complete the task associated to this TODO comment.(ñ¬ï€H“RINFOZ
+CODE_SMELL
+}squid:CommentedOutCodeLinei"<This block of commented-out lines of code should be removed.( ÎË¾ùÿÿÿÿH”RMAJORZ
+CODE_SMELL
+squid:S3923B"[Remove this conditional structure or edit its code blocks so that they're not all the same.(Ô¤ÌêH•RMAJORZBUG
+_squid:S1135ž"2Complete the task associated to this TODO comment.(º£ÿ H–RINFOZ
+CODE_SMELL
+_squid:S1135°"2Complete the task associated to this TODO comment.(ŒÃ÷§H—RINFOZ
+CODE_SMELL
+~squid:CommentedOutCodeLine«"<This block of commented-out lines of code should be removed.(ÒÌâ–øÿÿÿÿH˜RMAJORZ
+CODE_SMELL
+~squid:CommentedOutCodeLineÎ"<This block of commented-out lines of code should be removed.(ÒÌâ–øÿÿÿÿH™RMAJORZ
+CODE_SMELL
+~squid:CommentedOutCodeLineÒ"<This block of commented-out lines of code should be removed.(¬ïþ‡ûÿÿÿÿHšRMAJORZ
+CODE_SMELL
+~squid:CommentedOutCodeLineŒ"<This block of commented-out lines of code should be removed.(ÒÌâ–øÿÿÿÿH›RMAJORZ
+CODE_SMELL
+~squid:CommentedOutCodeLineÐ"<This block of commented-out lines of code should be removed.(ÒÌâ–øÿÿÿÿHœRMAJORZ
+CODE_SMELL
+dsquid:S1135¶"2Complete the task associated to this TODO comment.(íþ¸ÀøÿÿÿÿHRINFOZ
+CODE_SMELL
+~squid:CommentedOutCodeLine…"<This block of commented-out lines of code should be removed.(ýòú³ùÿÿÿÿHžRMAJORZ
+CODE_SMELL
+~squid:CommentedOutCodeLine’"<This block of commented-out lines of code should be removed.(«³¡úÿÿÿÿHŸRMAJORZ
+CODE_SMELL
+~squid:CommentedOutCodeLine"<This block of commented-out lines of code should be removed.(‰›òâüÿÿÿÿH RMAJORZ
+CODE_SMELL
+~squid:CommentedOutCodeLineî"<This block of commented-out lines of code should be removed.(ÒÌâ–øÿÿÿÿH¡RMAJORZ
+CODE_SMELL
+~squid:CommentedOutCodeLine‹"<This block of commented-out lines of code should be removed.(ÒÌâ–øÿÿÿÿH¢RMAJORZ
+CODE_SMELL
+§"squid:ClassVariableVisibilityCheck"[Make pMatchStartTime a static final constant or non-public and provide accessors if needed.(‚¡ÏüÿÿÿÿH£RMINORZVULNERABILITY
+_squid:S1135 "2Complete the task associated to this TODO comment.(àï¦ÐH¤RINFOZ
+CODE_SMELL
+~squid:CommentedOutCodeLineÜ"<This block of commented-out lines of code should be removed.(ÒÌâ–øÿÿÿÿH¥RMAJORZ
+CODE_SMELL
+~squid:CommentedOutCodeLineû"<This block of commented-out lines of code should be removed.(ÒÌâ–øÿÿÿÿH¦RMAJORZ
+CODE_SMELL
+~squid:CommentedOutCodeLineë"<This block of commented-out lines of code should be removed.(ÒÌâ–øÿÿÿÿH§RMAJORZ
+CODE_SMELL
+~squid:CommentedOutCodeLineŠ"<This block of commented-out lines of code should be removed.(ÒÌâ–øÿÿÿÿH¨RMAJORZ
+CODE_SMELL
+_squid:S1135´"2Complete the task associated to this TODO comment.(ŽÃ©þH©RINFOZ
+CODE_SMELL
+¤"squid:ClassVariableVisibilityCheck"XMake pElapsedTime a static final constant or non-public and provide accessors if needed.(çîëøÿÿÿÿHªRMINORZVULNERABILITY
+~squid:CommentedOutCodeLineÕ"<This block of commented-out lines of code should be removed.(ÒÌâ–øÿÿÿÿH«RMAJORZ
+CODE_SMELL
+_squid:S1135­"2Complete the task associated to this TODO comment.(ŒÃ÷§H¬RINFOZ
+CODE_SMELL
+}squid:CommentedOutCodeLine7"<This block of commented-out lines of code should be removed.(ùœö¤ùÿÿÿÿH­RMAJORZ
+CODE_SMELL
+~squid:CommentedOutCodeLine¦"<This block of commented-out lines of code should be removed.(ÒÌâ–øÿÿÿÿH®RMAJORZ
+CODE_SMELL
+dsquid:S1135¢"2Complete the task associated to this TODO comment.(ÆÈ‘¡ýÿÿÿÿH¯RINFOZ
+CODE_SMELL
+~squid:CommentedOutCodeLineµ"<This block of commented-out lines of code should be removed.(ÒÌâ–øÿÿÿÿH°RMAJORZ
+CODE_SMELL
+Ÿ"squid:ClassVariableVisibilityCheck"XMake pCurrentTime a static final constant or non-public and provide accessors if needed.(î“à±H±RMINORZVULNERABILITY
+_squid:S1135 "2Complete the task associated to this TODO comment.(§Ñ×šH²RINFOZ
+CODE_SMELL
+~squid:CommentedOutCodeLineÁ"<This block of commented-out lines of code should be removed.(ÒÌâ–øÿÿÿÿH³RMAJORZ
+CODE_SMELL
+~squid:CommentedOutCodeLineù"<This block of commented-out lines of code should be removed.(ÒÌâ–øÿÿÿÿH´RMAJORZ
+CODE_SMELL
+~squid:CommentedOutCodeLineÚ"<This block of commented-out lines of code should be removed.(ÒÌâ–øÿÿÿÿHµRMAJORZ
+CODE_SMELL
+~squid:CommentedOutCodeLineî"<This block of commented-out lines of code should be removed.(ÒÌâ–øÿÿÿÿH¶RMAJORZ
+CODE_SMELL
+~squid:CommentedOutCodeLine“"<This block of commented-out lines of code should be removed.(ÒÌâ–øÿÿÿÿH·RMAJORZ
+CODE_SMELL
+xsquid:CommentedOutCodeLineœ"<This block of commented-out lines of code should be removed.(ÁÚ4H¸RMAJORZ
+CODE_SMELL
+_squid:S1135œ"2Complete the task associated to this TODO comment.(ŽÃ©þH¹RINFOZ
+CODE_SMELL
+~squid:CommentedOutCodeLine¢"<This block of commented-out lines of code should be removed.(ÒÌâ–øÿÿÿÿHºRMAJORZ
+CODE_SMELL
+~squid:CommentedOutCodeLine«"<This block of commented-out lines of code should be removed.(ÒÌâ–øÿÿÿÿH»RMAJORZ
+CODE_SMELL
+ysquid:CommentedOutCodeLineÝ"<This block of commented-out lines of code should be removed.(øÓ±ÌH¼RMAJORZ
+CODE_SMELL
+~squid:CommentedOutCodeLineæ"<This block of commented-out lines of code should be removed.(ÒÌâ–øÿÿÿÿH½RMAJORZ
+CODE_SMELL
+~squid:CommentedOutCodeLineª
+"<This block of commented-out lines of code should be removed.(ÒÌâ–øÿÿÿÿH¾RMAJORZ
+CODE_SMELL
+dsquid:S1135¸"2Complete the task associated to this TODO comment.(ù÷­©úÿÿÿÿH¿RINFOZ
+CODE_SMELL
+d
+squid:S1068"9Replace this use of System.out or System.err by a logger.(Ø—HÀRMAJORZ
+CODE_SMELL
+^squid:S1135•"2Complete the task associated to this TODO comment.(‹¨ífHÁRINFOZ
+CODE_SMELL
+Nsquid:S1170"!Make this final field static too.(ýùÚÉHÂRMINORZ
+CODE_SMELL
+~squid:CommentedOutCodeLineÌ"<This block of commented-out lines of code should be removed.(ÒÌâ–øÿÿÿÿHÃRMAJORZ
+CODE_SMELL
+_squid:S1135’"2Complete the task associated to this TODO comment.(×É«›HÄRINFOZ
+CODE_SMELL
+dsquid:S1135ª"2Complete the task associated to this TODO comment.(ó‰ˆþÿÿÿÿHÅRINFOZ
+CODE_SMELL
+_squid:S1135º"2Complete the task associated to this TODO comment.(“ÉðñHÆRINFOZ
+CODE_SMELL
+~squid:CommentedOutCodeLineï"<This block of commented-out lines of code should be removed.(ÒÌâ–øÿÿÿÿHÇRMAJORZ
+CODE_SMELL
+~squid:CommentedOutCodeLine­"<This block of commented-out lines of code should be removed.(ÒÌâ–øÿÿÿÿHÈRMAJORZ
+CODE_SMELL

@@ -494,7 +494,7 @@ public class Robot extends IterativeRobot {
 					{
 						stopRobotDrive();
 
-						angleBoilerFoundDeg = driveGyro.getAngle();
+						//angleBoilerFoundDeg = driveGyro.getAngle();
 						sVel = calculateShotVelocityBasedOnDistance();
 
 						agitatorUp = false;
@@ -908,6 +908,7 @@ public class Robot extends IterativeRobot {
 		SmartDashboard.putNumber("Drive Encoder Inch: ", convertDriveTicksToInches(rightDriveEncoder.get()));
 
 		SmartDashboard.putNumber("Battery Scaling Factor: ", batteryCompensationPct());
+		SmartDashboard.putNumber("Voltage", PowerJNI.getVinVoltage()); //I wrote this
 	}
 
 	/*

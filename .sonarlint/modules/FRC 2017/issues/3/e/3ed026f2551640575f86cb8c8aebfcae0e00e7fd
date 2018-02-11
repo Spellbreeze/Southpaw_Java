@@ -1,0 +1,60 @@
+
+qsquid:S3398±">Move this method into the anonymous class declared at line 90.(š¤ïœûÿÿÿÿH±.RMINORZ
+CODE_SMELL
+f
+squid:S106¦"9Replace this use of System.out or System.err by a logger.( ÊÍ“H².RMAJORZ
+CODE_SMELL
+‹squid:S00115"ZRename this constant name to match the regular expression '^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$'.(æ´Ñ†H³.RCRITICALZ
+CODE_SMELL
+qsquid:S3398Ÿ">Move this method into the anonymous class declared at line 90.(ÇÏ“¢ûÿÿÿÿH´.RMINORZ
+CODE_SMELL
+ysquid:CommentedOutCodeLineÅ"<This block of commented-out lines of code should be removed.(¸‡²ÄHµ.RMAJORZ
+CODE_SMELL
+f
+squid:S106¡"9Replace this use of System.out or System.err by a logger.(ºé£H¶.RMAJORZ
+CODE_SMELL
+·squid:S1186ç"€Add a nested comment explaining why this method is empty, throw an UnsupportedOperationException or complete the implementation.(¬•êîıÿÿÿÿH·.RCRITICALZ
+CODE_SMELL
+squid:S00115"ZRename this constant name to match the regular expression '^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$'.(èÕ›õùÿÿÿÿH¸.RCRITICALZ
+CODE_SMELL
+‹squid:S00115"ZRename this constant name to match the regular expression '^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$'.(£üŒH¹.RCRITICALZ
+CODE_SMELL
+squid:S00115"ZRename this constant name to match the regular expression '^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$'.(ñøİĞÿÿÿÿÿHº.RCRITICALZ
+CODE_SMELL
+f
+squid:S106—"9Replace this use of System.out or System.err by a logger.(àßÁ®H».RMAJORZ
+CODE_SMELL
+qsquid:S3398š">Move this method into the anonymous class declared at line 90.(ÀÅıÿÿÿÿH¼.RMINORZ
+CODE_SMELL
+squid:S00115"ZRename this constant name to match the regular expression '^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$'.(Åí„ÙşÿÿÿÿH½.RCRITICALZ
+CODE_SMELL
+[squid:S1659)")Declare "mSlaveTalon" on a separate line.(ÆëãÇıÿÿÿÿH¾.RMINORZ
+CODE_SMELL
+f
+squid:S106’"9Replace this use of System.out or System.err by a logger.(­’áºH¿.RMAJORZ
+CODE_SMELL
+j
+squid:S106}"9Replace this use of System.out or System.err by a logger.(Ï‘Ø·ıÿÿÿÿHÀ.RMAJORZ
+CODE_SMELL
+ysquid:CommentedOutCodeLineŞ"<This block of commented-out lines of code should be removed.(èì“ÉHÁ.RMAJORZ
+CODE_SMELL
+f
+squid:S106œ"9Replace this use of System.out or System.err by a logger.(Œê˜åHÂ.RMAJORZ
+CODE_SMELL
+f
+squid:S106«"9Replace this use of System.out or System.err by a logger.(üÓÕ­HÃ.RMAJORZ
+CODE_SMELL
+squid:S00115"ZRename this constant name to match the regular expression '^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$'.(âÂ½áıÿÿÿÿHÄ.RCRITICALZ
+CODE_SMELL
+‹squid:S00115"ZRename this constant name to match the regular expression '^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$'.(Ÿ ÂøHÅ.RCRITICALZ
+CODE_SMELL
+k
+squid:S106ğ"9Replace this use of System.out or System.err by a logger.(›‡ÎûÿÿÿÿHÆ.RMAJORZ
+CODE_SMELL
+qsquid:S3398Ì">Move this method into the anonymous class declared at line 90.(¸²º–ÿÿÿÿÿHÇ.RMINORZ
+CODE_SMELL
+f
+squid:S106‹"9Replace this use of System.out or System.err by a logger.(«¸¹¡HÈ.RMAJORZ
+CODE_SMELL
+qsquid:S3398Ã">Move this method into the anonymous class declared at line 90.(¤ß™ÛşÿÿÿÿHÉ.RMINORZ
+CODE_SMELL

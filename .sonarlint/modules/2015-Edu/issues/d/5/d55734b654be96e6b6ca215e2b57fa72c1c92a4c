@@ -1,0 +1,15 @@
+
+Usquid:S1659"(Declare "last_right" on a separate line.(õ–Ê¼Hö/RMINORZ
+CODE_SMELL
+†squid:S3008"YRename this field "THROTTLE_SCALE" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(—ÑµH÷/RMINORZ
+CODE_SMELL
+„squid:S3008"WRename this field "DRIVE_LOCKED" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(Ã±âÄHø/RMINORZ
+CODE_SMELL
+squid:S3008"TRename this field "last_left" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(õ–Ê¼Hù/RMINORZ
+CODE_SMELL
+‚squid:S3008"URename this field "last_right" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(õ–Ê¼Hú/RMINORZ
+CODE_SMELL
+lsquid:S1118":Add a private constructor to hide the implicit public one.(ÀÅ±ııÿÿÿÿHû/RMAJORZ
+CODE_SMELL
+~squid:S001174"QRename this local variable to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(½àÕnHü/RMINORZ
+CODE_SMELL

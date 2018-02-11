@@ -1,0 +1,17 @@
+
+€squid:S1854’"FRemove this useless assignment to local variable "batteryScaleFactor".(ÂÁº›ÿÿÿÿÿ8äÁç ”,HÉRMAJORZ
+CODE_SMELL
+¡"squid:ClassVariableVisibilityCheck"UMake FrontLeft a static final constant or non-public and provide accessors if needed.(ïÙõ“ûÿÿÿÿHÊRMINORZVULNERABILITY
+¢"squid:ClassVariableVisibilityCheck"VMake FrontRight a static final constant or non-public and provide accessors if needed.(Ô¼‘˜ùÿÿÿÿHËRMINORZVULNERABILITY
+ˆsquid:S00116"URename this field "FrontRight" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(Ô¼‘˜ùÿÿÿÿHÌRMINORZ
+CODE_SMELL
+csquid:S1125„")Remove the literal "false" boolean value.(ƒøÊÃüÿÿÿÿ8ÂïšÎ“,HÍRMINORZ
+CODE_SMELL
+‡squid:S00116"TRename this field "FrontLeft" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(ïÙõ“ûÿÿÿÿHÎRMINORZ
+CODE_SMELL
+›"squid:ClassVariableVisibilityCheck"TMake RearLeft a static final constant or non-public and provide accessors if needed.(º²şHÏRMINORZVULNERABILITY
+squid:S00116"SRename this field "RearLeft" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(º²şHĞRMINORZ
+CODE_SMELL
+‡squid:S00116"TRename this field "RearRight" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(ÁŸâ‚úÿÿÿÿHÑRMINORZ
+CODE_SMELL
+¡"squid:ClassVariableVisibilityCheck"UMake RearRight a static final constant or non-public and provide accessors if needed.(ÁŸâ‚úÿÿÿÿHÒRMINORZVULNERABILITY
